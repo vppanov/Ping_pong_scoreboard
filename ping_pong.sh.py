@@ -32,7 +32,7 @@ if z == "p":
     serve = True
 else:
     serve = False
-        
+             
 #pen.write("{} : {}".format(RedScore, BlueScore), align="center", font=("Courier", 80, "bold"))
 
 
