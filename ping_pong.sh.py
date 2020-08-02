@@ -12,11 +12,11 @@ while RedScore <= 21 and BlueScore <= 21:
         sleep(5)
         BlueScore = RedScore = 0
     else:
-        x = int(input())
-        if x == 1:
+        x = str(input())
+        if x == "a":
             RedScore += 1
             print(RedScore, ":", BlueScore)
-        elif x == 2:
+        elif x == "2":
             BlueScore += 1
             print(RedScore, ":", BlueScore)
         elif x == 'REDRESET':
