@@ -46,7 +46,8 @@ while  RedScore <= 21 and BlueScore <= 21:
     if RedScore == 21:
         pen.write('RED WINS')
         sleep(5)
-        RedScore = BlueScore = 0 
+        RedScore = BlueScore = 0
+        count = 0
         pen.clear()
 
     elif BlueScore == 21:
@@ -54,15 +55,15 @@ while  RedScore <= 21 and BlueScore <= 21:
         pen.write('BLUE WINS')
         sleep(5)
         BlueScore = RedScore = 0
+        count = 0
         pen.clear()
+        
         
     else:
         
         x = str(input())
         count +=1
         
-        
-
            
         if x == "a":
             leftServe+=1
@@ -74,7 +75,7 @@ while  RedScore <= 21 and BlueScore <= 21:
                 pen.write("> {} : {}".format(RedScore, BlueScore), align="center", font=("Courier", 80, "bold"))
                 if count ==4:
                     serve = not serve
-                    count = 0
+                    count -1
                 
                 
             elif serve is False:
@@ -83,7 +84,7 @@ while  RedScore <= 21 and BlueScore <= 21:
                 pen.write("{} : {} <".format(RedScore, BlueScore), align="center", font=("Courier", 80, "bold"))
                 if count ==4:
                     serve = not serve
-                    count = 0 
+                    count -1 
       
                 
         elif x == "b":
@@ -96,7 +97,7 @@ while  RedScore <= 21 and BlueScore <= 21:
                 pen.write("> {} : {}".format(RedScore, BlueScore), align="center", font=("Courier", 80, "bold"))
                 if count ==4:
                     serve = not serve
-                    count = 0
+                    count -1
                     
             elif serve is False:
                 
@@ -104,8 +105,11 @@ while  RedScore <= 21 and BlueScore <= 21:
                 pen.write("{} : {} <".format(RedScore, BlueScore), align="center", font=("Courier", 80, "bold"))
                 if count ==4:
                     serve = not serve
-                    count = 0
-    
+                    count -1
+        
+        elif x == "z":
+            wn.bye()
+            
         else:
             pen.clear()
             pen.write('Bad Input')
