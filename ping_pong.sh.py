@@ -1,78 +1,144 @@
+#!/usr/bin/python3
+try:
+    import tkinter as tk
 
-from time import sleep
+except:
+    print("You need Python 3.8 installed and Python Tkinter. This script will automatically install dependencies... :]")
+    import os
 
-import turtle
+    os.system('sudo apt-get install python3.8 python3-tk')
+    import tkinter as tk
 
+window = tk.Tk()
 
-#variable for the game
-score_a = 0
-score_b = 0
-RedScore = 0
-BlueScore = 0
+window.configure(bg='black')
+window.geometry('1024x600')
 
+WHITE = (255, 255, 255)
+BLUE = (0, 0, 255)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLACK = (0, 0, 0)
 
-wn = turtle.Screen()
-wn.title("Scoreboard")
-wn.bgcolor("black")
-wn.setup(width=800, height=600)
-wn.tracer(0)
+scoreRed = 0
+scoreBlue = 0
 
+global BlueWonBoolean
+global RedWonBoolean
+BlueWonBoolean = False
+RedWonBoolean = False
 
-pen = turtle.Turtle()
-pen.speed(0)
-pen.shape("square")
-pen.color("white")
-pen.penup()
-pen.hideturtle()
-pen.goto(0, 0)
-pen.write("Who is serving ?")
+RedText = tk.StringVar()
+BlueText = tk.StringVar()
 
-z = str(input())
-if z == "p":
-    serve = True
-else:
-    serve = False
-        
-#pen.write("{} : {}".format(RedScore, BlueScore), align="center", font=("Courier", 80, "bold"))
+RedText.set(str(scoreRed))
+BlueText.set(str(scoreBlue))
 
 
-while  RedScore <= 21 and BlueScore <= 21:
-    wn.update()
-   
-    
- 
+def addBlue():
+    global scoreBlue
+    scoreBlue += 1
+    BlueText.set(str(scoreBlue))
+    if scoreBlue == 21:
+        global BlueWonBoolean
+        BlueWonBoolean = True
+        print("\nBlue Won!!!\nBLUE | RED\n " + str(scoreBlue) + "  :  " + str(scoreRed))
 
-    if RedScore == 21:
-        pen.write('RED WINS')
-        sleep(5)
-        RedScore = BlueScore = 0 
-        pen.clear()
-    elif BlueScore == 21:
-        
-        pen.write('BLUE WINS')
-        sleep(5)
-        BlueScore = RedScore = 0
-        pen.clear()
-        
-    else:
-        
-        x = str(input())
-        if x == "a" and serve is True:
-            RedScore += 1
-            pen.clear()
-            pen.write("> {} : {}".format(RedScore, BlueScore), align="center", font=("Courier", 80, "bold"))
-        elif x == "a" and serve is False:
-            RedScore += 1
-            pen.clear()
-            pen.write("{} : {} <".format(RedScore, BlueScore), align="center", font=("Courier", 80, "bold"))
-            
-            
-        elif x == "b":
-            BlueScore += 1
-            pen.clear()
-            pen.write("{} : {}".format(RedScore, BlueScore), align="center", font=("Courier", 80, "bold"))
-            
- 
-        else:
-            pen.clear()
-            pen.write('Bad Input')
+        global BlueWon
+        BlueWon = tk.Label(text="Blue Won!!!",
+                           foreground="white",
+                           background="black",
+                           width=10,
+                           height=10)
+        BlueWon.pack(side=tk.TOP, fill=tk.X)
+
+
+def addRed():
+    global scoreRed
+    scoreRed += 1
+    RedText.set(str(scoreRed))
+    if scoreRed == 21:
+        global RedWonBoolean
+        RedWonBoolean = True
+        print("\nRed Won!!!\nRED | BLUE\n" + str(scoreRed) + "  :  " + str(scoreBlue))
+
+        global RedWon
+        RedWon = tk.Label(text="Red Won!!!",
+                          foreground="white",
+                          background="black",
+                          width=10,
+                          height=10)
+        RedWon.pack(side=tk.TOP, fill=tk.X)
+
+
+def resetScore():
+    global scoreRed
+    global scoreBlue
+    global BlueWonBoolean
+    global RedWonBoolean
+    scoreRed = 0
+    scoreBlue = 0
+    RedText.set(str(scoreRed))
+    BlueText.set(str(scoreBlue))
+    BlueLabel.pack(side=tk.LEFT, fill=tk.X)
+    RedLabel.pack(side=tk.RIGHT, fill=tk.X)
+
+    if BlueWonBoolean == True:
+        BlueWon.destroy()
+        BlueWonBoolean = False
+    elif RedWonBoolean == True:
+        RedWon.destroy()
+        RedWonBoolean = False
+
+    BlueButton = tk.Button(window, text="Blue Point", bg="white", fg="yellow", width=30, height=15, command=addBlue)
+    RedButton = tk.Button(window, text="Red Point", bg="red", fg="black", width=30, height=15, command=addRed)
+    ResetButton = tk.Button(window, text="Reset", width=10, height=3, command=resetScore)
+
+    BlueLabel.pack(side=tk.LEFT, fill=tk.X)
+    RedLabel.pack(side=tk.RIGHT, fill=tk.X)
+
+
+def Quit():
+    print("Thanks for playing!!!")
+    exit()
+
+
+while True:
+    try:
+
+        BlueLabel = tk.Label(
+            textvariable=BlueText,
+            foreground="white",
+            background="black",
+            width=10,
+            height=5
+        )
+
+        RedLabel = tk.Label(
+            textvariable=RedText,
+            foreground="white",
+            background="black",
+            width=10,
+            height=5
+        )
+
+        BlueButton = tk.Button(window, text="Blue Point", bg="black", fg="WHITE", width=30, height=15, command=addBlue)
+        RedButton = tk.Button(window, text="Red Point", bg="black", fg="WHITE", width=30, height=15, command=addRed)
+        ResetButton = tk.Button(window, text="Reset", bg="black", fg="WHITE", width=10, height=3, command=resetScore)
+        quitButton = tk.Button(window, text="Quit ", bg="black", fg="WHITE", command=Quit)
+
+        # image = tk.PhotoImage(file="cornHole.png")
+        # imageLabel = tk.Label(image=image)
+
+        BlueLabel.pack(side=tk.LEFT, fill=tk.X)
+        RedLabel.pack(side=tk.RIGHT, fill=tk.X)
+
+        BlueButton.pack(side=tk.LEFT, fill=tk.X)
+        RedButton.pack(side=tk.RIGHT, fill=tk.X)
+        # imageLabel.pack(side=tk.TOP, fill=tk.X)
+        quitButton.pack(side=tk.TOP, fill=tk.X)
+        ResetButton.pack(side=tk.TOP, fill=tk.X)
+
+        window.mainloop()
+    except:
+        exit()
