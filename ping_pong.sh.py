@@ -8,11 +8,12 @@ except:
 
     os.system('sudo apt-get install python3.8 python3-tk')
     import tkinter as tk
-
+from time import sleep
 window = tk.Tk()
 
 window.configure(bg='black')
 window.geometry('1024x600')
+window.overrideredirect(True)
 
 WHITE = (255, 255, 255)
 BLUE = (0, 0, 255)
@@ -35,6 +36,7 @@ RedText.set(str(scoreRed))
 BlueText.set(str(scoreBlue))
 
 
+
 def addBlue():
     global scoreBlue
     scoreBlue += 1
@@ -43,6 +45,8 @@ def addBlue():
         global BlueWonBoolean
         BlueWonBoolean = True
         print("\nBlue Won!!!\nBLUE | RED\n " + str(scoreBlue) + "  :  " + str(scoreRed))
+
+
 
         global BlueWon
         BlueWon = tk.Label(text="Blue Won!!!",
@@ -142,3 +146,8 @@ while True:
         window.mainloop()
     except:
         exit()
+
+
+
+
+
