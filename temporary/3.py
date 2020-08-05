@@ -12,6 +12,13 @@ def exitProgram():
     
     win.quit()
 
+def foo():
+    global win
+
+    E = tk.Entry(win)
+    E.bind("<KeyPress-t>", lambda E: win.destroy())
+
+
 win.title("Scoreboard")
 win.geometry("800x480")
 win.configure(background="black")

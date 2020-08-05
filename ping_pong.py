@@ -102,9 +102,6 @@ def resetScore():
     RedLabel.pack(side=tk.RIGHT, fill=tk.X)
 
 
-def Quit():
-    print("Thanks for playing!!!")
-    exit()
 
 
 while True:
@@ -129,7 +126,7 @@ while True:
         BlueButton = tk.Button(window, text="Blue Point", bg="black", fg="WHITE", width=30, height=15, command=addBlue)
         RedButton = tk.Button(window, text="Red Point", bg="black", fg="WHITE", width=30, height=15, command=addRed)
         ResetButton = tk.Button(window, text="Reset", bg="black", fg="WHITE", width=10, height=3, command=resetScore)
-        quitButton = tk.Button(window, text="Quit ", bg="black", fg="WHITE", command=Quit)
+
 
         # image = tk.PhotoImage(file="cornHole.png")
         # imageLabel = tk.Label(image=image)
@@ -140,13 +137,12 @@ while True:
         BlueButton.pack(side=tk.LEFT, fill=tk.X)
         RedButton.pack(side=tk.RIGHT, fill=tk.X)
         # imageLabel.pack(side=tk.TOP, fill=tk.X)
-        quitButton.pack(side=tk.TOP, fill=tk.X)
-        ResetButton.pack(side=tk.TOP, fill=tk.X)
 
+        ResetButton.pack(side=tk.TOP, fill=tk.X)
+        window.bind("<Escape>", exit)
         window.mainloop()
     except:
         exit()
-
 
 
 
