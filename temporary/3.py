@@ -1,36 +1,33 @@
 from tkinter import *
 
-import tkinter.font as tkFont
+root = Tk()
+root.title(' Canvas')
 
-win = Tk()
+root.geometry("1024x600")
+counter = 100
+w = 1024
+h = 600
+x = w//2
+y = h//2
+my_canvas = Canvas(root, width=w, height=h, bg="white")
+my_canvas.pack()
 
-myFont = tkFont.Font(family = "Comic Sans", size = 36, weight = "bold")
-
-
-def exitProgram():
-    print ("Exiting")
-    
-    win.quit()
-
-def foo():
-    global win
-
-    E = tk.Entry(win)
-    E.bind("<KeyPress-t>", lambda E: win.destroy())
+oval = my_canvas.create_rectangle(x, y, x+10, y+10)
+my_canvas.pack()
 
 
-win.title("Scoreboard")
-win.geometry("800x480")
-win.configure(background="black")
-
-
-
-exitButton = Button(win, text = "Exit", font = myFont, command = exitProgram, height = 2, width = 6)
-exitButton.pack()
-
-win.mainloop()
+def score(root):
+    global counter
+    my_canvas.delete(root)
+    square = my_canvas.create_rectangle(200,150, x-350, y-250, fill="white")
+    counter += 1
+    my_text = my_canvas.create_text(124, 50, text=str(counter), font=("Arial", 48))
+    my_canvas.delete(root)
 
 
 
+score(root)
 
-
+root.bind("i", score)
+root.bind("q", exit)
+root.mainloop()
