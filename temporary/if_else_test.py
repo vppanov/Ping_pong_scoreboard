@@ -1,42 +1,44 @@
-from tkinter import *
+from time import sleep
+import turtle
 
-class Window():
+# variable for the game
+count = 0
+score_b = 0
+RedScore = 0
+BlueScore = 0
+scoreCount = 0
+leftServe = 0
+rightServe = 0
 
-    def __init__(self, root):
-
-        self.top = Label(root, text = "Test")
-        self.top.pack()
-
-        self.e = Entry(root)
-        self.e.pack()
-        self.e.focus_set()
-
-        self.b = Button(root, text = "Enter", command = self.function)
-        self.b.pack()
-
-        self.answer = StringVar()
-        self.answer.set("Enter answer")
-
-        self.check = Label(root, text = self.answer.get(), textvariable = self.answer)
-        self.check.pack()
+root = turtle.Screen()
+root.title("Scoreboard")
+root.bgcolor("black")
+root.setup(width=800, height=600)
 
 
-otgovor = StringVar()
-otgovor.set("Proba")
+pen = turtle.Turtle()
+pen.speed(0)
+pen.shape("square")
+pen.color("white")
+pen.penup()
+pen.hideturtle()
+pen.goto(0, 0)
+pen.write("Who is serving ?")
 
-textt = Label(root, text= self.answer.get(),  )
-textt.pack()
+def addBlue():
+    global BlueScore
+    BlueScore += 1
 
-    #Functions
-    def function(self):
+def addRed():
+    global RedScore
+    RedScore += 1
 
-        data = self.e.get()
+while RedScore <= 21 and BlueScore <= 21:
+    root.update()
+    pen.write(f"{RedScore} : {BlueScore} <", align="center", font=("Courier", 80, "bold"))
 
-        if data == "5":
-            self.answer.set("Correct")
-        else:
-            self.answer.set("Incorrect")
 
-root = Tk()
-w = Window(root)
-root.mainloop()
+def close():
+    root.bye()
+
+
