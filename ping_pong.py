@@ -190,7 +190,7 @@ while leftScore <= 40 and rightScore <= 40:
                               font=("Arial", 60, "bold"))
                     pen.goto(0, -100)
 
-    if leftScore == 2:
+    if leftScore == 21:
         pen.goto(0, -200)
         pen.write('Left  WINS !', align="center", font=("Arial", 100, "bold"))
         pen.goto(0, -100)
@@ -206,7 +206,7 @@ while leftScore <= 40 and rightScore <= 40:
         pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center", font=("Arial", 60, "bold"))
         pen.goto(0, -100)
 
-    elif rightScore == 2:
+    elif rightScore == 21:
         pen.goto(0, -200)
         pen.write('Right  WINS !', align="center", font=("Arial", 100, "bold"))
         pen.goto(0, -100)

@@ -16,18 +16,19 @@ oval = my_canvas.create_rectangle(x, y, x+10, y+10)
 my_canvas.pack()
 
 
-def score(root):
+def score(e):
     global counter
-    my_canvas.delete(root)
-    square = my_canvas.create_rectangle(200,150, x-350, y-250, fill="white")
-    counter += 1
-    my_text = my_canvas.create_text(124, 50, text=str(counter), font=("Arial", 48))
-    my_canvas.delete(root)
+    if e.char == "i":
+        square = my_canvas.create_rectangle(200,150, x-350, y-250, fill="white"), e.char
+        counter += 1
+
+        my_text = my_canvas.create_text(124, 50, text=str(counter), font=("Arial", 48)), e.char
 
 
 
-score(root)
 
-root.bind("i", score)
-root.bind("q", exit)
-root.mainloop()
+
+def close(e):
+    root.destroy(), e.char
+
+

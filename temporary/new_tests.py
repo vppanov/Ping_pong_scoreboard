@@ -1,107 +1,92 @@
 from tkinter import *
-from tkinter import ttk
-
 
 # environment set up
-
-
 root = Tk()
-content = ttk.Frame(root)
-frame = ttk.Frame(borderwidth=3)
-
 root.overrideredirect(False)
 root.title("Scoreboard")
 root.geometry("1024x600")
 root.configure(background="white")
+root.focus_set()
 for b in range(12):
-    root.columnconfigure(b, weight=10)
+    root.grid_columnconfigure(b, minsize=85)
 for i in range(6):
-    root.rowconfigure(i, weight=10)
+    root.grid_rowconfigure(i, minsize=100)
 
 # variables
-counter = 100
-counter2 = 10
-countkey = 0
+counterLeft = 0
+counterRight = 0
+countTotal = 0
 
 # variables convert to StringVar
-testVar = StringVar()
-testVar.set(str(counter))
-testVar2 = StringVar()
-testVar2.set(str(counter2))
-testVar3 = StringVar()
-testVar3.set(str(countkey))
+counterLeftVar = StringVar()
+counterLeftVar.set(str(counterLeft))
+counterRightVar = StringVar()
+counterRightVar.set(str(counterRight))
+counterTotalVar = StringVar()
+counterTotalVar.set(str(countTotal))
 
 # function to monitor key action
-otgovor = StringVar()
-otgovor.set("oooo")
+boolean = True
 
 
 def keyaction(e):
-    global counter
-    global counter2
-    global countkey
-
-    if e.char == "t":
-        counter += 1
-        countkey += 1
-        testVar.set(str(counter)), e.char
-        testVar3.set(str(countkey)), e.char
-
-    elif e.char == "i":
-        counter2 += 1
-        countkey += 1
-        testVar2.set(str(counter2)), e.char
-        testVar3.set(str(countkey)), e.char
+    global counterLeft
+    global counterRight
+    global countTotal
+    global BlueWon
+    global boolean
+    if e.char == "i":
+        counterLeft += 1
+        countTotal += 1
+        counterLeftVar.set(str(counterLeft)), e.char
+        counterTotalVar.set(str(countTotal)), e.char
+    elif e.char == "o":
+        counterRight += 1
+        countTotal += 1
+        counterRightVar.set(str(counterRight)), e.char
+        counterTotalVar.set(str(countTotal)), e.char
     elif e.char == "r":
-        counter = counter2 = 0
-        testVar.set(str(counter)), e.char
-        testVar2.set(str(counter2)), e.char
+        counterLeft = counterRight = 0
+        counterLeftVar.set(str(counterLeft)), e.char
+        counterRightVar.set(str(counterRight)), e.char
+        if totCount is None:
+            totCount.destroy()
 
-def turns():
-    global countkey
-    countkey = 0
-    global root
-    if countkey < 10:
-        otgovor.set(">")
 
-    else:
-        otgovor.set("dsfsdfsdf")
+# s = Text(root, height=2, width=30).grid(column=2, row=7)
+#zz = Label(root, textvariable=messageBox).grid(column=1, row=0)
 
 
 
-s = Text(root, height=2, width=30)
-s.grid(column=2, row=7)
-s.insert(END, "testsadadadasg")
+# total score
+
+#totCountLabel = Label(root, font=("Arial", 28), text="Total Score", bg="white").grid(column=3, row=1)
+
+totCount = Label(root, font=("Arial", 48), textvariable=counterTotalVar, bg="white").grid(column=5, row=1)
+# Score on the screen
+left = Label(root, font=("Arial", 48), textvariable=counterLeftVar, bg="white").grid(column=4, row=3)
+middle = Label(root, text=" : ", font=("Arial bold", 40), bg="white").grid(column=5, row=3)
+right = Label(root, font=("Arial", 48), textvariable=counterRightVar, bg="white").grid(column=6, row=3)
 
 
+if countTotal > 10:
+    BlueWon = Label(root, font=("Arial", 20), text="Game Over", bg="white").grid(column=0, row=0)
+elif countTotal > 0:
+    BlueWon = Label(root, font=("Arial", 20), text="Game running", bg="white").grid(column=0, row=0)
 
 
-
-# def counterin2(z):
-#    global counter2
-#    counter2 += 1
-#    testVar2.set(str(counter2)), z.char
-
-
-# BlueButton = Button(root, text="Blue Point", bg="white", fg="yellow", width=10, height=10, command=keyaction)
-# BlueButton.pack()
-
-
-y2 = Label(root, font=("Arial", 48), textvariable=testVar2, bg="white").grid(column=0, row=4)
-y3 = Label(root, font=("Arial", 48), textvariable=testVar3, bg="white").grid(column=1, row=1)
-y = Label(root, font=("Arial", 28), textvariable=testVar, bg="white").grid(column=2, row=3)
-
-Text()
 
 def close(e):
     root.destroy(), e.char
 
-zz = Label(root, text=otgovor.get(), textvariable=otgovor).grid(column=1, row=5)
-
-
-root.bind("<Key>", keyaction)
-
+while True:
+    try:
+        root.bind("<Key>", keyaction)
 # root.bind("i", keyaction)
 # root.bind("t", keyaction)
-root.bind("q", close)
-root.mainloop()
+        root.bind("q", close)
+        root.bind("<Escape>", exit)
+        root.mainloop()
+    except:
+        exit()
+
