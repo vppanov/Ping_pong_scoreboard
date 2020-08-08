@@ -1,149 +1,294 @@
-#!/usr/bin/python3
-try:
-    import tkinter as tk
-
-except:
-    print("You need Python 3.8 installed and Python Tkinter. This script will automatically install dependencies... :]")
-    import os
-
-    os.system('sudo apt-get install python3.8 python3-tk')
-    import tkinter as tk
 from time import sleep
-window = tk.Tk()
+from turtle import Screen, Turtle
+from math import fabs
 
-window.configure(bg='black')
-window.geometry('1024x600')
-window.overrideredirect(True)
+# variable for the game
+count = 0
+leftScore = 0
+rightScore = 0
+serve = None
+totalLeft = 0
+totalRight = 0
 
-WHITE = (255, 255, 255)
-BLUE = (0, 0, 255)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLACK = (0, 0, 0)
+# window screen set up
+window = Screen()
+window.title("Scoreboard")
+window.bgcolor("black")
+window.setup(width=1024, height=600)
+window.tracer(0)
 
-scoreRed = 0
-scoreBlue = 0
+# turtle set up
+pen = Turtle()
+pen.speed(0)
+pen.color("white")
+pen.penup()
+pen.hideturtle()
+pen.goto(0, 150)
+pen.write("Welcome to scoreboard!", align="center", font=("Arial", 60, "bold"))
+pen.goto(0, -100)
+pen.write("Please choose serving player.", align="center", font=("Arial", 60, "bold"))
 
-global BlueWonBoolean
-global RedWonBoolean
-BlueWonBoolean = False
-RedWonBoolean = False
+while leftScore <= 40 and rightScore <= 40:
+    window.update()
+    if serve is None:
+        z = str(input())
+        if z == "q":  # command to close window
+            window.bye()
 
-RedText = tk.StringVar()
-BlueText = tk.StringVar()
+        elif z == "1":
+            serve = True  # serving left player
+            pen.clear()
+            pen.color("green")
+            pen.write("> {} : {} ".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+            pen.goto(0, 220)
+            pen.color("white")
+            pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center", font=("Arial", 60, "bold"))
+            pen.goto(0, -100)
 
-RedText.set(str(scoreRed))
-BlueText.set(str(scoreBlue))
+        elif z == "2":
+            serve = False  # serving right player
+            pen.clear()
+            pen.color("green")
+            pen.write(" {} : {} <".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+            pen.goto(0, 220)
+            pen.color("white")
+            pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center", font=("Arial", 60, "bold"))
+            pen.goto(0, -100)
 
+    while leftScore >= 20 and rightScore >= 20:
+        if serve is True:
+            serve = not serve  # serving right player
+        elif serve is False:
+            serve = not serve  # serving left player
+        count = 0
+        x = str(input())
+        count += 1
+        if x == "r":  # reset result
+            serve = None
+            totalLeft = totalRight = leftScore = rightScore = count = 0
+            pen.clear()
+            pen.goto(0, 220)
+            pen.write("New game!", align="center", font=("Arial", 60, "bold"))
+            pen.goto(0, -100)
+            pen.write("Who is serving ?", align="center", font=("Arial", 60, "bold"))
 
+        elif x == "a":
+            leftScore += 1
+            if serve is True:
+                pen.clear()
+                pen.color("green")
+                pen.write("> {} : {} ".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+                pen.goto(0, 220)
+                pen.color("white")
+                pen.color("white")
+                pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center",
+                          font=("Arial", 60, "bold"))
+                pen.goto(0, -100)
 
-def addBlue():
-    global scoreBlue
-    scoreBlue += 1
-    BlueText.set(str(scoreBlue))
-    if scoreBlue == 21:
-        global BlueWonBoolean
-        BlueWonBoolean = True
-        print("\nBlue Won!!!\nBLUE | RED\n " + str(scoreBlue) + "  :  " + str(scoreRed))
+                if fabs(rightScore - leftScore) == 2:  # checking for two points difference
+                    pen.goto(0, -200)
+                    pen.write('Left  WINS !', align="center", font=("Arial", 100, "bold"))
+                    pen.goto(0, -100)
+                    leftScore = rightScore = 0
+                    sleep(5)
+                    count = 0
+                    pen.clear()
+                    pen.color("green")
+                    pen.write("> {} : {} ".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+                    serve = True
+                    totalLeft += 1
+                    pen.goto(0, 220)
+                    pen.color("white")
+                    pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center",
+                              font=("Arial", 60, "bold"))
+                    pen.goto(0, -100)
 
+            elif serve is False:
+                pen.clear()
+                pen.color("green")
+                pen.write(" {} : {} <".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+                pen.goto(0, 220)
+                pen.color("white")
+                pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center",
+                          font=("Arial", 60, "bold"))
+                pen.goto(0, -100)
 
+                if fabs(leftScore - rightScore) == 2:
+                    pen.goto(0, -200)
+                    pen.write('Left  WINS !', align="center", font=("Arial", 100, "bold"))
+                    pen.goto(0, -100)
+                    leftScore = rightScore = 0
+                    sleep(5)
+                    count = 0
+                    pen.clear()
+                    pen.color("green")
+                    pen.write(" {} : {} <".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+                    serve = True
+                    totalLeft += 1
+                    pen.goto(0, 220)
+                    pen.color("white")
+                    pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center",
+                              font=("Arial", 60, "bold"))
+                    pen.goto(0, -100)
 
-        global BlueWon
-        BlueWon = tk.Label(text="Blue Won!!!",
-                           foreground="white",
-                           background="black",
-                           width=10,
-                           height=10)
-        BlueWon.pack(side=tk.TOP, fill=tk.X)
+        elif x == "b":
+            rightScore += 1
+            if serve is True:
+                pen.clear()
+                pen.color("green")
+                pen.write("> {} : {} ".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+                pen.goto(0, 220)
+                pen.color("white")
+                pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center",
+                          font=("Arial", 60, "bold"))
+                pen.goto(0, -100)
 
+                if fabs(leftScore - rightScore) == 2:  # checking for two points difference
+                    pen.goto(0, -200)
+                    pen.write('Right  WINS !', align="center", font=("Arial", 100, "bold"))
+                    pen.goto(0, -100)
+                    leftScore = rightScore = 0
+                    sleep(5)
+                    count = 0
+                    pen.clear()
+                    pen.color("green")
+                    pen.write("> {} : {} ".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+                    serve = False
+                    totalRight += 1
+                    pen.goto(0, 220)
+                    pen.color("white")
+                    pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center",
+                              font=("Arial", 60, "bold"))
+                    pen.goto(0, -100)
 
-def addRed():
-    global scoreRed
-    scoreRed += 1
-    RedText.set(str(scoreRed))
-    if scoreRed == 21:
-        global RedWonBoolean
-        RedWonBoolean = True
-        print("\nRed Won!!!\nRED | BLUE\n" + str(scoreRed) + "  :  " + str(scoreBlue))
+            elif serve is False:
+                pen.clear()
+                pen.color("green")
+                pen.write(" {} : {} <".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+                pen.goto(0, 220)
+                pen.color("white")
+                pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center",
+                          font=("Arial", 60, "bold"))
+                pen.goto(0, -100)
 
-        global RedWon
-        RedWon = tk.Label(text="Red Won!!!",
-                          foreground="white",
-                          background="black",
-                          width=10,
-                          height=10)
-        RedWon.pack(side=tk.TOP, fill=tk.X)
+                if fabs(leftScore - rightScore) == 2:
+                    pen.goto(0, -200)
+                    pen.write('Right  WINS !', align="center", font=("Arial", 100, "bold"))
+                    pen.goto(0, -100)
+                    leftScore = rightScore = 0
+                    sleep(5)
+                    count = 0
+                    sleep(5)
+                    pen.clear()
+                    pen.color("green")
+                    pen.write(" {} : {} <".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+                    serve = False
+                    totalRight += 1
+                    pen.goto(0, 220)
+                    pen.color("white")
+                    pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center",
+                              font=("Arial", 60, "bold"))
+                    pen.goto(0, -100)
 
+    if leftScore == 2:
+        pen.goto(0, -200)
+        pen.write('Left  WINS !', align="center", font=("Arial", 100, "bold"))
+        pen.goto(0, -100)
+        leftScore = rightScore = 0
+        sleep(5)
+        count = 0
+        totalLeft += 1
+        pen.clear()
+        pen.color("green")
+        pen.write("> {} : {} ".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+        pen.goto(0, 220)
+        pen.color("white")
+        pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center", font=("Arial", 60, "bold"))
+        pen.goto(0, -100)
 
-def resetScore():
-    global scoreRed
-    global scoreBlue
-    global BlueWonBoolean
-    global RedWonBoolean
-    scoreRed = 0
-    scoreBlue = 0
-    RedText.set(str(scoreRed))
-    BlueText.set(str(scoreBlue))
-    BlueLabel.pack(side=tk.LEFT, fill=tk.X)
-    RedLabel.pack(side=tk.RIGHT, fill=tk.X)
+    elif rightScore == 2:
+        pen.goto(0, -200)
+        pen.write('Right  WINS !', align="center", font=("Arial", 100, "bold"))
+        pen.goto(0, -100)
+        rightScore = leftScore = 0
+        sleep(5)
+        count = 0
+        totalRight += 1
+        pen.clear()
+        pen.color("green")
+        pen.write(" {} : {} <".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+        pen.goto(0, 220)
+        pen.color("white")
+        pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center", font=("Arial", 60, "bold"))
+        pen.goto(0, -100)
 
-    if BlueWonBoolean == True:
-        BlueWon.destroy()
-        BlueWonBoolean = False
-    elif RedWonBoolean == True:
-        RedWon.destroy()
-        RedWonBoolean = False
+    else:
+        x = str(input())
+        count += 1
+        if x == "r":  # reset result
+            serve = None
+            totalLeft = totalRight = leftScore = rightScore = count = 0
+            pen.clear()
+            pen.goto(0, 220)
+            pen.write("New game!", align="center", font=("Arial", 60, "bold"))
+            pen.goto(0, -100)
+            pen.write("Who is serving ?", align="center", font=("Arial", 60, "bold"))
 
-    BlueButton = tk.Button(window, text="Blue Point", bg="white", fg="yellow", width=30, height=15, command=addBlue)
-    RedButton = tk.Button(window, text="Red Point", bg="red", fg="black", width=30, height=15, command=addRed)
-    ResetButton = tk.Button(window, text="Reset", width=10, height=3, command=resetScore)
+        elif x == "a":
+            leftScore += 1
+            if serve is True:
+                pen.clear()
+                pen.color("green")
+                pen.write("> {} : {} ".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+                pen.goto(0, 220)
+                pen.color("white")
+                pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center",
+                          font=("Arial", 60, "bold"))
+                pen.goto(0, -100)
+                if count == 4:
+                    serve = not serve
+                    count = -1
 
-    BlueLabel.pack(side=tk.LEFT, fill=tk.X)
-    RedLabel.pack(side=tk.RIGHT, fill=tk.X)
+            elif serve is False:
+                pen.clear()
+                pen.color("green")
+                pen.write(" {} : {} <".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+                pen.goto(0, 220)
+                pen.color("white")
+                pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center",
+                          font=("Arial", 60, "bold"))
+                pen.goto(0, -100)
+                if count == 4:
+                    serve = not serve
+                    count = -1
 
+        elif x == "b":
+            rightScore += 1
+            if serve is True:
+                pen.clear()
+                pen.color("green")
+                pen.write("> {} : {} ".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+                pen.goto(0, 220)
+                pen.color("white")
+                pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center",
+                          font=("Arial", 60, "bold"))
+                pen.goto(0, -100)
+                if count == 4:
+                    serve = not serve
+                    count = -1
 
+            elif serve is False:
+                pen.clear()
+                pen.color("green")
+                pen.write(" {} : {} <".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+                pen.goto(0, 220)
+                pen.color("white")
+                pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center",
+                          font=("Arial", 60, "bold"))
+                pen.goto(0, -100)
+                if count == 4:
+                    serve = not serve
+                    count = -1
 
-
-while True:
-    try:
-
-        BlueLabel = tk.Label(
-            textvariable=BlueText,
-            foreground="white",
-            background="black",
-            width=10,
-            height=5
-        )
-
-        RedLabel = tk.Label(
-            textvariable=RedText,
-            foreground="white",
-            background="black",
-            width=10,
-            height=5
-        )
-
-        BlueButton = tk.Button(window, text="Blue Point", bg="black", fg="WHITE", width=30, height=15, command=addBlue)
-        RedButton = tk.Button(window, text="Red Point", bg="black", fg="WHITE", width=30, height=15, command=addRed)
-        ResetButton = tk.Button(window, text="Reset", bg="black", fg="WHITE", width=10, height=3, command=resetScore)
-
-
-        # image = tk.PhotoImage(file="cornHole.png")
-        # imageLabel = tk.Label(image=image)
-
-        BlueLabel.pack(side=tk.LEFT, fill=tk.X)
-        RedLabel.pack(side=tk.RIGHT, fill=tk.X)
-
-        BlueButton.pack(side=tk.LEFT, fill=tk.X)
-        RedButton.pack(side=tk.RIGHT, fill=tk.X)
-        # imageLabel.pack(side=tk.TOP, fill=tk.X)
-
-        ResetButton.pack(side=tk.TOP, fill=tk.X)
-        window.bind("<Escape>", exit)
-        window.mainloop()
-    except:
-        exit()
-
-
-
-
+        elif x == "q":  # close window
+            window.bye()
