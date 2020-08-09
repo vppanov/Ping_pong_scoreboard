@@ -80,7 +80,6 @@ while leftScore <= 40 and rightScore <= 40:
                 pen.write("> {} : {} ".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
                 pen.goto(0, 220)
                 pen.color("white")
-                pen.color("white")
                 pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center",
                           font=("Arial", 60, "bold"))
                 pen.goto(0, -100)
@@ -89,9 +88,8 @@ while leftScore <= 40 and rightScore <= 40:
                     pen.goto(0, -200)
                     pen.write('Left  WINS !', align="center", font=("Arial", 100, "bold"))
                     pen.goto(0, -100)
-                    leftScore = rightScore = 0
+                    leftScore = rightScore = count = 0
                     sleep(5)
-                    count = 0
                     pen.clear()
                     pen.color("green")
                     pen.write("> {} : {} ".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
@@ -117,9 +115,8 @@ while leftScore <= 40 and rightScore <= 40:
                     pen.goto(0, -200)
                     pen.write('Left  WINS !', align="center", font=("Arial", 100, "bold"))
                     pen.goto(0, -100)
-                    leftScore = rightScore = 0
+                    leftScore = rightScore = count = 0
                     sleep(5)
-                    count = 0
                     pen.clear()
                     pen.color("green")
                     pen.write(" {} : {} <".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
@@ -147,12 +144,11 @@ while leftScore <= 40 and rightScore <= 40:
                     pen.goto(0, -200)
                     pen.write('Right  WINS !', align="center", font=("Arial", 100, "bold"))
                     pen.goto(0, -100)
-                    leftScore = rightScore = 0
+                    leftScore = rightScore = count = 0
                     sleep(5)
-                    count = 0
                     pen.clear()
                     pen.color("green")
-                    pen.write("> {} : {} ".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+                    pen.write(" {} : {} <".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
                     serve = False
                     totalRight += 1
                     pen.goto(0, 220)
@@ -175,9 +171,7 @@ while leftScore <= 40 and rightScore <= 40:
                     pen.goto(0, -200)
                     pen.write('Right  WINS !', align="center", font=("Arial", 100, "bold"))
                     pen.goto(0, -100)
-                    leftScore = rightScore = 0
-                    sleep(5)
-                    count = 0
+                    leftScore = rightScore = count = 0
                     sleep(5)
                     pen.clear()
                     pen.color("green")
@@ -194,9 +188,8 @@ while leftScore <= 40 and rightScore <= 40:
         pen.goto(0, -200)
         pen.write('Left  WINS !', align="center", font=("Arial", 100, "bold"))
         pen.goto(0, -100)
-        leftScore = rightScore = 0
+        leftScore = rightScore = count = 0
         sleep(5)
-        count = 0
         totalLeft += 1
         pen.clear()
         pen.color("green")
@@ -210,9 +203,8 @@ while leftScore <= 40 and rightScore <= 40:
         pen.goto(0, -200)
         pen.write('Right  WINS !', align="center", font=("Arial", 100, "bold"))
         pen.goto(0, -100)
-        rightScore = leftScore = 0
+        rightScore = leftScore = count = 0
         sleep(5)
-        count = 0
         totalRight += 1
         pen.clear()
         pen.color("green")
