@@ -1,3 +1,11 @@
+# # #        TO DO LIST
+# 1. Create a player selection screen. Use the turtle pen with different shape for selection and display player names.
+# 2. Update reset function when we have a player selection screen
+# 3. Add player IDs + names and add match information to table
+# 4. Use time to record match duration and append it to table
+# 5. Prepare a page with statistics and best players for the moment
+
+
 from time import sleep
 from turtle import Screen, Turtle
 from math import fabs
