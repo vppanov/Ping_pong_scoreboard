@@ -8,20 +8,10 @@
 # 7. Validation for the same player selected.
 # 8. Ability to scroll only between players in the list
 
-import RPi.GPIO as GPIO
+
 from time import sleep
 from turtle import Screen, Turtle
 from math import fabs
-from gpiozero import Button
-
-buttonA = Button(16)
-buttonB = Button(26)
-GPIO_INPUT_A = 16
-GPIO_INPUT_B = 26
-
-GPIO.setup(GPIO_INPUT_A, GPIO.IN, pull_up_down=GPIO.PDU_UP)
-GPIO.setup(GPIO_INPUT_B, GPIO.IN, pull_up_down=GPIO.PDU_UP)
-
 
 # variable for the game
 count = 0
@@ -161,12 +151,12 @@ while leftScore <= 40 and rightScore <= 40:  # maximum points
     window.update()
     if serve is None:
         z = str(input())
-        if buttonA.when_held(3):  # command to close window
+        if z == "q":  # command to close window
             window.bye()
-        elif buttonB.when_activated():
+        elif z == "1":
             serve = True  # serving left player
             servingturndisplay()
-        elif buttonA.when_activated():
+        elif z == "2":
             serve = False  # serving right player
             servingturndisplay()
     while leftScore >= 20 and rightScore >= 20:  # handling overtime

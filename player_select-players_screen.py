@@ -2,14 +2,19 @@
 from time import sleep
 from turtle import Screen, Turtle
 
-# variable for the game
+exec(open('system/database.py').read()) # executing database creation file
 
-count = 0
-leftScore = 0
-rightScore = 0
-serve = None
-totalLeft = 0
-totalRight = 0
+# variable for the game
+player1 = False
+player2 = False
+playerNames = ["Веско", "Сашо", "Гери", "Георги", "Ивайло", "Друг"]
+player1_id = None
+player2_id = None
+posCount = 0
+positionY = 100
+positionX = -350
+positionX2 = 100
+positionY2 = 100
 
 # window screen set up
 window = Screen()
@@ -28,114 +33,180 @@ pen.down()
 pen.up()
 
 
-#  writing names
-player1 = False
-player2 = False
-playerNames = ["Веско", "Сашо", "Гери", "Друг"]
-player1_id = None
-player2_id = None
-posCount = 0
-
 def setplayer(e):
-    global positiony
-    position = positiony + 100
-    pen.color("red")
-    pen.begin_fill()
-    pen.goto(-200, position)
-    pen.down()
-    pen.circle(35)
-    pen.end_fill()
-    pen.up()
-    pen.goto(0, 215)
-    pen.write("Player selected", align="center", font=("Arial", 60, "bold"))
-    pen.goto(0, -100)
-    positiony = 100
-    e = not e
-    return e
+    global positionY
+    if 0 < posCount <= 3:
+        red_position = positionY + 100
+        pen.color("red")
+        pen.begin_fill()
+        pen.goto(positionX, red_position)
+        pen.down()
+        pen.circle(35)
+        pen.end_fill()
+        pen.up()
+        pen.goto(0, 200)
+        pen.write("Player selected", align="center", font=("Arial", 60, "bold"))
+        e = not e
+        return e
+
+    elif 3 < posCount <= 5:
+        red_position2 = positionY2 + 100
+        pen.color("red")
+        pen.begin_fill()
+        pen.goto(positionX2, red_position2)
+        pen.down()
+        pen.circle(35)
+        pen.end_fill()
+        pen.up()
+        pen.goto(0, 200)
+        pen.write("Player selected", align="center", font=("Arial", 60, "bold"))
+        e = not e
+        return e
+    elif posCount == 0:
+        pen.color("red")
+        pen.begin_fill()
+        pen.goto(100, -100)
+        pen.down()
+        pen.circle(35)
+        pen.end_fill()
+        pen.up()
+        pen.goto(0, 200)
+        pen.write("Player selected", align="center", font=("Arial", 60, "bold"))
+        e = not e
+        return e
+
 
 def printnames():
     pen.color("black")
-    pen.goto(0, 150)
+    pen.goto(-200, 100)
     pen.write("Веско", align="center", font=("Arial", 60, "bold"))
-    pen.goto(0, 50)
+    pen.goto(-200, 0)
     pen.write("Сашо", align="center", font=("Arial", 60, "bold"))
-    pen.goto(0, -50)
+    pen.goto(-200, -100)
     pen.write("Гери", align="center", font=("Arial", 60, "bold"))
-    pen.goto(0, -150)
+    pen.goto(300, 100)
+    pen.write("Георги", align="center", font=("Arial", 60, "bold"))
+    pen.goto(300, 0)
+    pen.write("Ивайло", align="center", font=("Arial", 60, "bold"))
+    pen.goto(300, -100)
     pen.write("Друг", align="center", font=("Arial", 60, "bold"))
 
-def printcircle():
-    pen.color("yellow")
-    pen.begin_fill()
-    pen.goto(-200, positiony)
-    pen.down()
-    pen.circle(35)
-    pen.end_fill()
-    pen.up()
+
+def position():
+    global positionY, positionX, positionX2, positionY2, posCount
+    if posCount <= 3:
+        pen.color("yellow")
+        pen.begin_fill()
+        pen.goto(positionX, positionY)
+        pen.down()
+        pen.circle(35)
+        pen.end_fill()
+        pen.up()
+        positionY -= 100
+    elif 3 < posCount <= 5:
+        pen.color("yellow")
+        pen.begin_fill()
+        pen.goto(positionX2, positionY2)
+        pen.down()
+        pen.circle(35)
+        pen.end_fill()
+        pen.up()
+        positionY2 -= 100
+    elif posCount >= 6:
+        pen.color("yellow")
+        pen.begin_fill()
+        pen.goto(positionX2, positionY2)
+        pen.down()
+        pen.circle(35)
+        pen.end_fill()
+        pen.up()
+        positionY2 -= 100
+        posCount = 0
+        positionY = 100
+        positionX = -350
+        positionX2 = 100
+        positionY2 = 100
 
 
 
-positiony = 150
-positiony2 = 150
 while True:
     window.update()
     while player1 is not True or player2 is not True:
         printnames()
         x = input(str(input))
         if x == "n" and player1 is False:
+            posCount += 1
             pen.clear()
             printnames()
-            printcircle()
-            positiony -= 100
+            position()
         elif x == "o" and player1 is False:
-            if positiony == 150:
+            if positionY == 100 and posCount > 0:
                 player1 = setplayer(player1)
                 player1_id = playerNames.index("Веско")
-                sleep(4)
+                sleep(3)
                 pen.clear()
-            elif positiony == 50:
+            elif positionY == 0:
                 player1 = setplayer(player1)
                 player1_id = playerNames.index("Сашо")
-                sleep(4)
+                sleep(3)
                 pen.clear()
-            elif positiony == -50:
+            elif positionY == -100:
                 player1 = setplayer(player1)
                 player1_id = playerNames.index("Гери")
-                sleep(4)
+                sleep(3)
                 pen.clear()
-            elif positiony == -150:
+            elif positionY2 == 100 and posCount > 0:
+                player1 = setplayer(player1)
+                player1_id = playerNames.index("Георги")
+                sleep(3)
+                pen.clear()
+            elif positionY2 == 0:
+                player1 = setplayer(player1)
+                player1_id = playerNames.index("Ивайло")
+                sleep(3)
+                pen.clear()
+            else:
                 player1 = setplayer(player1)
                 player1_id = playerNames.index("Друг")
-                sleep(4)
+                sleep(3)
                 pen.clear()
 
         elif x == "n" and player2 is False:
-            positiony -= 150
+            posCount += 1
             pen.clear()
             printnames()
-            printcircle()
+            position()
         elif x == "o" and player2 is False:
-            if positiony == 150:
+            if positionY == 100 and posCount > 0:
                 player2 = setplayer(player2)
                 player2_id = playerNames.index("Веско")
-                sleep(4)
+                sleep(3)
                 pen.clear()
-            elif positiony == 50:
+            elif positionY == 0:
                 player2 = setplayer(player2)
                 player2_id = playerNames.index("Сашо")
-                sleep(4)
+                sleep(3)
                 pen.clear()
-            elif positiony == -50:
+            elif positionY == -100:
                 player2 = setplayer(player2)
                 player2_id = playerNames.index("Гери")
-                sleep(4)
+                sleep(3)
                 pen.clear()
-            elif positiony == -150:
+            elif positionY2 == 100 and posCount > 0:
+                player2 = setplayer(player2)
+                player2_id = playerNames.index("Георги")
+                sleep(3)
+                pen.clear()
+            elif positionY2 == 0:
+                player2 = setplayer(player2)
+                player2_id = playerNames.index("Ивайло")
+                sleep(3)
+                pen.clear()
+            else:
                 player2 = setplayer(player2)
                 player2_id = playerNames.index("Друг")
-                sleep(4)
+                sleep(3)
                 pen.clear()
-
 
 
 window.mainloop()
