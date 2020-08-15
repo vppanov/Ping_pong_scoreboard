@@ -4,6 +4,9 @@
 # 3. Add player IDs + names and add match information to table
 # 4. Use time to record match duration and append it to table
 # 5. Prepare a page with statistics and best players for the moment
+# 6. Prepare game with 11 points. Change serving and overtime
+# 7. Validation for the same player selected.
+# 8. Ability to scroll only between players in the list
 
 
 from time import sleep
@@ -220,4 +223,4 @@ while leftScore <= 40 and rightScore <= 40:  # maximum points
         elif x == "q":  # close program
             window.bye()
         else:
-            wronginput() # handling wrong keyboard input
+            wronginput()  # handling wrong keyboard input
