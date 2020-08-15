@@ -31,7 +31,7 @@ pen.up()
 #  writing names
 player1 = False
 player2 = False
-playerNames = ["Веско", "Сашо", "Гери"]
+playerNames = ["Веско", "Сашо", "Гери", "Друг"]
 player1_id = None
 player2_id = None
 posCount = 0
@@ -46,7 +46,7 @@ def setplayer(e):
     pen.circle(35)
     pen.end_fill()
     pen.up()
-    pen.goto(0, 200)
+    pen.goto(0, 215)
     pen.write("Player selected", align="center", font=("Arial", 60, "bold"))
     pen.goto(0, -100)
     positiony = 100
@@ -55,12 +55,14 @@ def setplayer(e):
 
 def printnames():
     pen.color("black")
-    pen.goto(0, 100)
+    pen.goto(0, 150)
     pen.write("Веско", align="center", font=("Arial", 60, "bold"))
-    pen.goto(0, 0)
+    pen.goto(0, 50)
     pen.write("Сашо", align="center", font=("Arial", 60, "bold"))
-    pen.goto(0, -100)
+    pen.goto(0, -50)
     pen.write("Гери", align="center", font=("Arial", 60, "bold"))
+    pen.goto(0, -150)
+    pen.write("Друг", align="center", font=("Arial", 60, "bold"))
 
 def printcircle():
     pen.color("yellow")
@@ -73,8 +75,8 @@ def printcircle():
 
 
 
-positiony = 100
-positiony2 = 100
+positiony = 150
+positiony2 = 150
 while True:
     window.update()
     while player1 is not True or player2 is not True:
@@ -86,40 +88,51 @@ while True:
             printcircle()
             positiony -= 100
         elif x == "o" and player1 is False:
-            if positiony == 0:
+            if positiony == 150:
                 player1 = setplayer(player1)
                 player1_id = playerNames.index("Веско")
                 sleep(4)
                 pen.clear()
-            elif positiony == -100:
+            elif positiony == 50:
                 player1 = setplayer(player1)
                 player1_id = playerNames.index("Сашо")
                 sleep(4)
                 pen.clear()
-            elif positiony == -200:
+            elif positiony == -50:
                 player1 = setplayer(player1)
                 player1_id = playerNames.index("Гери")
                 sleep(4)
                 pen.clear()
+            elif positiony == -150:
+                player1 = setplayer(player1)
+                player1_id = playerNames.index("Друг")
+                sleep(4)
+                pen.clear()
+
         elif x == "n" and player2 is False:
+            positiony -= 150
             pen.clear()
             printnames()
             printcircle()
-            positiony -= 100
         elif x == "o" and player2 is False:
-            if positiony == 0:
+            if positiony == 150:
                 player2 = setplayer(player2)
                 player2_id = playerNames.index("Веско")
                 sleep(4)
                 pen.clear()
-            elif positiony == -100:
+            elif positiony == 50:
                 player2 = setplayer(player2)
                 player2_id = playerNames.index("Сашо")
                 sleep(4)
                 pen.clear()
-            elif positiony == -200:
+            elif positiony == -50:
                 player2 = setplayer(player2)
                 player2_id = playerNames.index("Гери")
+                sleep(4)
+                pen.clear()
+            elif positiony == -150:
+                player2 = setplayer(player2)
+                player2_id = playerNames.index("Друг")
                 sleep(4)
                 pen.clear()
 
