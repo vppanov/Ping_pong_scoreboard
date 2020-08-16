@@ -33,7 +33,6 @@ positionX2 = 100
 positionY2 = 100
 
 
-
 # window screen set up
 window = Screen()
 window.title("Table tennis scoreboard")
@@ -55,9 +54,6 @@ pen.goto(0, -100)
 pen.write("Please choose players.", align="center", font=("Arial", 60, "bold"))
 sleep(5)
 pen.clear()
-
-# definitions of game functions
-
 
 
 # definitions of game functions
@@ -83,7 +79,6 @@ def serveistrue():
     pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center",
               font=("Arial", 60, "bold"))
     pen.goto(0, -100)
-
 
 
 def serveisfalse():
@@ -146,8 +141,6 @@ def wronginput():
     pen.goto(0, 150)
     pen.write("Wrong input ", align="center", font=("Arial", 60, "bold"))
     pen.goto(0, -100)
-
-
 
 
 def servingturndisplay():
@@ -280,17 +273,6 @@ def setplayer(e):
         return e
 
 
-def serveistrue():
-    global leftScore, rightScore, totalLeft, totalRight
-    pen.clear()
-    pen.color("green")
-    pen.write("> {} : {} ".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
-    pen.goto(0, 220)
-    pen.color("white")
-    pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center",
-              font=("Arial", 60, "bold"))
-    pen.goto(0, -100)
-
 # game logic
 
 
@@ -395,18 +377,6 @@ pen.goto(0, 0)
 pen.write("Please choose serving player.", align="center", font=("Arial", 60, "bold"))
 sleep(1)
 
-
-while leftScore <= 40 and rightScore <= 40:  # maximum points
-    window.update()
-    if serve is None:
-        z = input(str(input))
-
-def wronginput():
-    global count
-    count -= 1
-    pen.goto(0, 150)
-    pen.write("Wrong input ", align="center", font=("Arial", 60, "bold"))
-    pen.goto(0, -100)
 
 # game logic
 while leftScore <= 40 and rightScore <= 40:  # maximum points
