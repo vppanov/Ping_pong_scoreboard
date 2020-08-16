@@ -1,8 +1,9 @@
 # # #        TO DO LIST
-# 1. Update reset function when we have a player selection screen
+# 1. Prepare a working variant for raspberry + sleep time
 # 2. Prepare a page with statistics and best players for the moment
 # 3. Prepare game with 11 points. Change serving and overtime
 # 4. Reduce the code - move functions in another file
+# 5. Translate game text
 
 
 from time import sleep
@@ -32,7 +33,14 @@ positionX = -350
 positionX2 = 100
 positionY2 = 100
 match_duration = None
+game_state = 0
 DATABASE_NAME = 'system/stats.db'
+
+# # # Game states ####
+# 0 - choose players
+# 50 - choose game size
+# 100 - serve select
+# 200 - in game
 
 # window screen set up
 window = Screen()
@@ -56,7 +64,7 @@ pen.write("Please choose players.", align="center", font=("Arial", 60, "bold"))
 sleep(5)
 pen.clear()
 
-
+# definitions of game functions
 
 
 def database_update_():
@@ -72,17 +80,26 @@ def database_update_():
     return c.lastrowid
 
 
-# definitions of game functions
-
-def resetscore():
-    global serve, totalLeft, totalRight, leftScore, rightScore, count
+def resetgame():
+    window.bgcolor("white")
+    pen.color("black")
+    global serve, totalLeft, totalRight, leftScore, rightScore, count, game_state, player1, player2, posCount, \
+        positionX, positionY, positionX2, positionY2, player1_id, player2_id
     serve = None
-    totalLeft = totalRight = leftScore = rightScore = count = 0
+    game_state = totalLeft = totalRight = leftScore = rightScore = count = 0
     pen.clear()
     pen.goto(0, 220)
     pen.write("New game!", align="center", font=("Arial", 60, "bold"))
     pen.goto(0, -100)
-    pen.write("Who is serving ?", align="center", font=("Arial", 60, "bold"))
+    player1 = False
+    player2 = False
+    player1_id = None
+    player2_id = None
+    posCount = 0
+    positionY = 100
+    positionX = -350
+    positionX2 = 100
+    positionY2 = 100
 
 
 def serveistrue():
@@ -134,7 +151,8 @@ def rightwins():
     pen.write(" {} : {} <".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
     pen.goto(0, 220)
     pen.color("white")
-    pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center", font=("Arial", 60, "bold"))
+    pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center",
+              font=("Arial", 60, "bold"))
     pen.goto(0, -100)
 
 
@@ -299,186 +317,190 @@ def setplayer(e):
         return e
 
 
+def serveswitch():
+    global serve
+    if serve is True:
+        serve = not serve  # switching serving player to right player
+    elif serve is False:
+        serve = not serve  # switching serving player to left player
+
 # game logic
 
 
 while True:
     window.update()
-    while player1 is not True or player2 is not True:
-        printnames()
-        x = input(str(input))
-        if x == "n" and player1 is False:
-            posCount += 1
-            pen.clear()
+    if game_state == 0:
+        while player1 is not True or player2 is not True:
             printnames()
-            position()
-        elif x == "o" and player1 is False:
-            if positionY == 0:
-                player1 = setplayer(player1)
-                player1_id = playerNames.index("Веско")
-                sleep(3)
+            x = input(str(input))
+            if x == "n" and player1 is False:
+                posCount += 1
                 pen.clear()
-                playercheck()
-            elif positionY == -100:
-                player1 = setplayer(player1)
-                player1_id = playerNames.index("Сашо")
-                sleep(3)
+                printnames()
+                position()
+            elif x == "o" and player1 is False:
+                if positionY == 0:
+                    player1 = setplayer(player1)
+                    player1_id = playerNames.index("Веско")
+                    sleep(3)
+                    pen.clear()
+                    playercheck()
+                elif positionY == -100:
+                    player1 = setplayer(player1)
+                    player1_id = playerNames.index("Сашо")
+                    sleep(3)
+                    pen.clear()
+                    playercheck()
+                elif positionY == -200 and posCount <= 3:
+                    player1 = setplayer(player1)
+                    player1_id = playerNames.index("Гери")
+                    sleep(3)
+                    pen.clear()
+                    playercheck()
+                elif positionY2 == 0 and posCount > 0:
+                    player1 = setplayer(player1)
+                    player1_id = playerNames.index("Георги")
+                    sleep(3)
+                    pen.clear()
+                    playercheck()
+                elif positionY2 == -100 and posCount > 0:
+                    player1 = setplayer(player1)
+                    player1_id = playerNames.index("Ивайло")
+                    sleep(3)
+                    pen.clear()
+                    playercheck()
+                else:
+                    player1 = setplayer(player1)
+                    player1_id = playerNames.index("Друг")
+                    sleep(3)
+                    pen.clear()
+                    playercheck()
+            elif x == "n" and player2 is False:
+                posCount += 1
                 pen.clear()
-                playercheck()
-            elif positionY == -200 and posCount <= 3:
-                player1 = setplayer(player1)
-                player1_id = playerNames.index("Гери")
-                sleep(3)
-                pen.clear()
-                playercheck()
-            elif positionY2 == 0 and posCount > 0:
-                player1 = setplayer(player1)
-                player1_id = playerNames.index("Георги")
-                sleep(3)
-                pen.clear()
-                playercheck()
-            elif positionY2 == -100 and posCount > 0:
-                player1 = setplayer(player1)
-                player1_id = playerNames.index("Ивайло")
-                sleep(3)
-                pen.clear()
-                playercheck()
-            else:
-                player1 = setplayer(player1)
-                player1_id = playerNames.index("Друг")
-                sleep(3)
-                pen.clear()
-                playercheck()
+                printnames()
+                position()
+            elif x == "o" and player2 is False:
+                if positionY == 0:
+                    player2 = setplayer(player2)
+                    player2_id = playerNames.index("Веско")
+                    sleep(3)
+                    pen.clear()
+                    playercheck()
+                elif positionY == -100:
+                    player2 = setplayer(player2)
+                    player2_id = playerNames.index("Сашо")
+                    sleep(3)
+                    pen.clear()
+                    playercheck()
+                elif positionY == -200 and posCount <= 3:
+                    player2 = setplayer(player2)
+                    player2_id = playerNames.index("Гери")
+                    sleep(3)
+                    pen.clear()
+                    playercheck()
+                elif positionY2 == 0 and posCount > 0:
+                    player2 = setplayer(player2)
+                    player2_id = playerNames.index("Георги")
+                    sleep(3)
+                    pen.clear()
+                    playercheck()
+                elif positionY2 == -100 and posCount > 0:
+                    player2 = setplayer(player2)
+                    player2_id = playerNames.index("Ивайло")
+                    sleep(3)
+                    pen.clear()
+                    playercheck()
+                else:
+                    player2 = setplayer(player2)
+                    player2_id = playerNames.index("Друг")
+                    sleep(3)
+                    pen.clear()
+                    playercheck()
+        if player1 is True and player2 is True:
+            game_state = 100
+            sleep(2)
 
-        elif x == "n" and player2 is False:
-            posCount += 1
-            pen.clear()
-            printnames()
-            position()
-        elif x == "o" and player2 is False:
-            if positionY == 0:
-                player2 = setplayer(player2)
-                player2_id = playerNames.index("Веско")
-                sleep(3)
-                pen.clear()
-                playercheck()
-            elif positionY == -100:
-                player2 = setplayer(player2)
-                player2_id = playerNames.index("Сашо")
-                sleep(3)
-                pen.clear()
-                playercheck()
-            elif positionY == -200 and posCount <= 3:
-                player2 = setplayer(player2)
-                player2_id = playerNames.index("Гери")
-                sleep(3)
-                pen.clear()
-                playercheck()
-            elif positionY2 == 0 and posCount > 0:
-                player2 = setplayer(player2)
-                player2_id = playerNames.index("Георги")
-                sleep(3)
-                pen.clear()
-                playercheck()
-            elif positionY2 == -100 and posCount > 0:
-                player2 = setplayer(player2)
-                player2_id = playerNames.index("Ивайло")
-                sleep(3)
-                pen.clear()
-                playercheck()
-            else:
-                player2 = setplayer(player2)
-                player2_id = playerNames.index("Друг")
-                sleep(3)
-                pen.clear()
-                playercheck()
-    if player1 is True and player2 is True:
-        sleep(2)
-        break
-
-window.bgcolor("black")
-pen.color("white")
-
-pen.goto(0, 0)
-pen.write("Please choose serving player.", align="center", font=("Arial", 60, "bold"))
-sleep(1)
-
-start_game = default_timer()
-# game logic
-while leftScore <= 40 and rightScore <= 40:  # maximum points
-    window.update()
-    if serve is None:
+    window.bgcolor("black")
+    pen.color("white")
+    pen.goto(0, 0)
+    pen.write("Please choose serving player.", align="center", font=("Arial", 60, "bold"))
+    sleep(1)
+    start_game = default_timer()
+    while game_state == 100:
         z = input(str(input))
         if z == "q":  # command to close window
             window.bye()
         elif z == "1":
             serve = True  # serving left player
             servingturndisplay()
+            game_state = 200
         elif z == "2":
             serve = False  # serving right player
             servingturndisplay()
-    while leftScore >= 20 and rightScore >= 20:  # handling overtime
-        if serve is True:
-            serve = not serve  # switching serving player to right player
-        elif serve is False:
-            serve = not serve  # switching serving player to left player
-        count = 0
-        x = input(str(input))
-        count += 1
-        if x == "r":  # reset result
-            resetscore()
-        elif x == "4":  # point for left player
-            leftScore += 1
-            if serve is True:
-                serveistrue()
-                if fabs(rightScore - leftScore) == 2:  # checking for two points difference
-                    leftwins()  # game ends
-                    serve = True  # assigning serve turn for next game
-            elif serve is False:
-                serveisfalse()
-                if fabs(leftScore - rightScore) == 2:
-                    leftwins()
-                    serve = True  # assigning serve turn for next game
-        elif x == "5":  # point for right  player
-            rightScore += 1
-            if serve is True:
-                serveistrue()
-                if fabs(leftScore - rightScore) == 2:  # checking for two points difference
-                    rightwins()
-                    serve = False
-            elif serve is False:
-                serveisfalse()
-                if fabs(leftScore - rightScore) == 2:  # checking for two points difference
-                    rightwins()
-                    serve = False
+            game_state = 200
+    while game_state == 200:
+        if leftScore >= 20 and rightScore >= 20:
+            while leftScore >= 20 and rightScore >= 20:  # handling overtime
+                serveswitch()
+                x = input(str(input))
+                if x == "r":  # reset result
+                    resetgame()
+                elif x == "4":  # point for left player
+                    leftScore += 1
+                    if serve is True:
+                        serveistrue()
+                        if fabs(rightScore - leftScore) == 2:  # checking for two points difference
+                            leftwins()  # game ends
+                            serve = True  # assigning serve turn for next game
+                    elif serve is False:
+                        serveisfalse()
+                        if fabs(leftScore - rightScore) == 2:
+                            leftwins()
+                            serve = True  # assigning serve turn for next game
+                elif x == "5":  # point for right  player
+                    rightScore += 1
+                    if serve is True:
+                        serveistrue()
+                        if fabs(leftScore - rightScore) == 2:  # checking for two points difference
+                            rightwins()
+                            serve = False
+                    elif serve is False:
+                        serveisfalse()
+                        if fabs(leftScore - rightScore) == 2:  # checking for two points difference
+                            rightwins()
+                            serve = False
+                else:
+                    wronginput()  # handling wrong keyboard input
+        if leftScore == 21:  # left wins
+            leftwins()
+        elif rightScore == 21:  # right wins
+            rightwins()
         else:
-            wronginput()  # handling wrong keyboard input
-    if leftScore == 21:  # left wins
-        leftwins()
-    elif rightScore == 21:  # right wins
-        rightwins()
-    else:
-        x = input(str(input))
-        count += 1
-        if x == "r":  # reset result
-            resetscore()
-        elif x == "4":  # point for left player
-            leftScore += 1
-            if serve is True:
-                serveistrue()
-                servicecheck()
-            elif serve is False:
-                serveisfalse()
-                servicecheck()
-        elif x == "5":  # point for right  player
-            rightScore += 1
-            if serve is True:
-                serveistrue()
-                servicecheck()
-            elif serve is False:
-                serveisfalse()
-                servicecheck()
-        elif x == "q":  # close program
-            window.bye()
-        else:
-            wronginput()  # handling wrong keyboard input
+            x = input(str(input))
+            count += 1
+            if x == "r":  # reset result
+                resetgame()
+                sleep(3)
+            elif x == "4":  # point for left player
+                leftScore += 1
+                if serve is True:
+                    serveistrue()
+                    servicecheck()
+                elif serve is False:
+                    serveisfalse()
+                    servicecheck()
+            elif x == "5":  # point for right  player
+                rightScore += 1
+                if serve is True:
+                    serveistrue()
+                    servicecheck()
+                elif serve is False:
+                    serveisfalse()
+                    servicecheck()
+            elif x == "q":  # close program
+                window.bye()
+                break
+            else:
+                wronginput()  # handling wrong keyboard input
+window.bye()
