@@ -1,11 +1,15 @@
+
+
 from time import sleep
 from turtle import Screen, Turtle
-
-exec(open('system/database.py').read())  # executing database creation file
+import RPi.GPIO as GPIO
+from gpiozero import Button
+buttonA = Button(16)
+buttonB = Button(26)
 
 # variable for the game
 player1 = False
-player2 = False
+player2 = None
 playerNames = ["Веско", "Сашо", "Гери", "Георги", "Ивайло", "Друг"]
 player1_id = None
 player2_id = None
@@ -21,11 +25,12 @@ window.title("Table tennis scoreboard")
 window.bgcolor("white")
 window.setup(width=1024, height=600)
 
+
 # turtle set up
 pen = Turtle()
 pen.speed(0)
 pen.color("black")
-
+pen.shape("circle")
 pen.hideturtle()
 pen.down()
 pen.up()
@@ -126,112 +131,85 @@ def position():
         positionY2 = 100
 
 
-def playercheck():
-    global player1, player2, player1_id, player2_id
-    if player1_id == player2_id:
-        pen.goto(0, 200)
-        pen.write("Same player selected", align="center", font=("Arial", 60, "bold"))
-        printnames()
-        player1 = False
-        player2 = False
-        player1_id = None
-        player2_id = None
-        sleep(3)
-        pen.clear()
-
 
 while True:
     window.update()
     while player1 is not True or player2 is not True:
         printnames()
-        x = input(str(input))
-        if x == "n" and player1 is False:
+
+        if buttonA.is_active and player1 is False:
             posCount += 1
             pen.clear()
             printnames()
             position()
-        elif x == "o" and player1 is False:
-            if positionY == 0:
+        elif buttonB.is_active and player1 is False:
+            player2 = False
+            if positionY == 100 and posCount > 0:
                 player1 = setplayer(player1)
                 player1_id = playerNames.index("Веско")
                 sleep(3)
                 pen.clear()
-                playercheck()
-            elif positionY == -100:
+            elif positionY == 0:
                 player1 = setplayer(player1)
                 player1_id = playerNames.index("Сашо")
                 sleep(3)
                 pen.clear()
-                playercheck()
-            elif positionY == -200 and posCount <= 3:
+            elif positionY == -100:
                 player1 = setplayer(player1)
                 player1_id = playerNames.index("Гери")
                 sleep(3)
                 pen.clear()
-                playercheck()
-            elif positionY2 == 0 and posCount > 0:
+            elif positionY2 == 100 and posCount > 0:
                 player1 = setplayer(player1)
                 player1_id = playerNames.index("Георги")
                 sleep(3)
                 pen.clear()
-                playercheck()
-            elif positionY2 == -100 and posCount > 0:
+            elif positionY2 == 0:
                 player1 = setplayer(player1)
                 player1_id = playerNames.index("Ивайло")
                 sleep(3)
                 pen.clear()
-                playercheck()
             else:
                 player1 = setplayer(player1)
                 player1_id = playerNames.index("Друг")
                 sleep(3)
                 pen.clear()
-                playercheck()
-
-        elif x == "n" and player2 is False:
+        elif buttonA.is_active and player2 is False:
             posCount += 1
             pen.clear()
             printnames()
             position()
-        elif x == "o" and player2 is False:
-            if positionY == 0:
+        elif buttonB.is_active and player2 is False:
+            if positionY == 100 and posCount > 0:
                 player2 = setplayer(player2)
                 player2_id = playerNames.index("Веско")
                 sleep(3)
                 pen.clear()
-                playercheck()
-            elif positionY == -100:
+            elif positionY == 0:
                 player2 = setplayer(player2)
                 player2_id = playerNames.index("Сашо")
                 sleep(3)
                 pen.clear()
-                playercheck()
-            elif positionY == -200 and posCount <= 3:
+            elif positionY == -100:
                 player2 = setplayer(player2)
                 player2_id = playerNames.index("Гери")
                 sleep(3)
                 pen.clear()
-                playercheck()
-            elif positionY2 == 0 and posCount > 0:
+            elif positionY2 == 100 and posCount > 0:
                 player2 = setplayer(player2)
                 player2_id = playerNames.index("Георги")
                 sleep(3)
                 pen.clear()
-                playercheck()
-            elif positionY2 == -100 and posCount > 0:
+            elif positionY2 == 0:
                 player2 = setplayer(player2)
                 player2_id = playerNames.index("Ивайло")
                 sleep(3)
                 pen.clear()
-                playercheck()
             else:
                 player2 = setplayer(player2)
                 player2_id = playerNames.index("Друг")
                 sleep(3)
                 pen.clear()
-                playercheck()
-    if player1 is True and player2 is True:
-        break
-window.bye()
+
 
 window.mainloop()
