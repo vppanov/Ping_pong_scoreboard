@@ -13,7 +13,6 @@ from time import sleep
 from turtle import Screen, Turtle
 from math import fabs
 
-
 # variable for the game
 count = 0
 leftScore = 0
@@ -21,6 +20,7 @@ rightScore = 0
 serve = None
 totalLeft = 0
 totalRight = 0
+
 player1 = False
 player2 = False
 playerNames = ["Веско", "Сашо", "Гери", "Георги", "Ивайло", "Друг"]
@@ -33,11 +33,11 @@ positionX2 = 100
 positionY2 = 100
 
 
+
 # window screen set up
 window = Screen()
 window.title("Table tennis scoreboard")
 window.bgcolor("white")
-
 window.setup(width=1024, height=600)
 window.tracer(0)
 
@@ -59,6 +59,9 @@ pen.clear()
 # definitions of game functions
 
 
+
+# definitions of game functions
+
 def resetscore():
     global serve, totalLeft, totalRight, leftScore, rightScore, count
     serve = None
@@ -68,6 +71,19 @@ def resetscore():
     pen.write("New game!", align="center", font=("Arial", 60, "bold"))
     pen.goto(0, -100)
     pen.write("Who is serving ?", align="center", font=("Arial", 60, "bold"))
+
+    
+def serveistrue():
+    global leftScore, rightScore, totalLeft, totalRight
+    pen.clear()
+    pen.color("green")
+    pen.write("> {} : {} ".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+    pen.goto(0, 220)
+    pen.color("white")
+    pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center",
+              font=("Arial", 60, "bold"))
+    pen.goto(0, -100)
+
 
 
 def serveisfalse():
@@ -132,6 +148,8 @@ def wronginput():
     pen.goto(0, -100)
 
 
+
+
 def servingturndisplay():
     global serve, leftScore, rightScore, totalLeft, totalLeft
     if serve:
@@ -153,7 +171,7 @@ def servingturndisplay():
         pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center", font=("Arial", 60, "bold"))
         pen.goto(0, -100)
 
-
+        
 def printnames():
     pen.color("black")
     pen.goto(-200, 100)
@@ -378,6 +396,19 @@ pen.write("Please choose serving player.", align="center", font=("Arial", 60, "b
 sleep(1)
 
 
+while leftScore <= 40 and rightScore <= 40:  # maximum points
+    window.update()
+    if serve is None:
+        z = input(str(input))
+
+def wronginput():
+    global count
+    count -= 1
+    pen.goto(0, 150)
+    pen.write("Wrong input ", align="center", font=("Arial", 60, "bold"))
+    pen.goto(0, -100)
+
+# game logic
 while leftScore <= 40 and rightScore <= 40:  # maximum points
     window.update()
     if serve is None:
