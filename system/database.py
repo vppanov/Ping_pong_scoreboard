@@ -36,12 +36,12 @@ def main():
     full = os.path.join(path, "system/stats.db")
     database = full
 
-    sql_create_statistics_table = """ CREATE TABLE IF NOT EXISTS statistics (
+    sql_create_statistics_table = """ CREATE TABLE IF NOT EXISTS Table_tennis_statistics (
                                         Match_id integer PRIMARY KEY,
-                                        Player_1_Name text NOT NULL,
-                                        Player_2_Name text NOT NULL,
-                                        Player_1_Score integer NOT NULL,
-                                        Player_2_Score integer NOT NULL,
+                                        Player_1_Name text,
+                                        Player_2_Name text,
+                                        Player_1_Score integer,
+                                        Player_2_Score integer,
                                         Match_duration text,
                                         Date text
                                     ); """
@@ -58,6 +58,16 @@ def main():
     else:
         print("Error! cannot create the database connection.")
 
+DATABASE_NAME = 'system/stats.db'
+
+def database_update_():
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+    c.execute(
+        'INSERT INTO statistics (Player_1_Name, Player_1_Name, Player_1_Score, Player_2_Score, Match_duration, Date) VALUES (vesko, test, 21, 12, 22, 12-13)')
+    conn.commit()
+    conn.close()
+    return c.lastrowid
 
 if __name__ == '__main__':
     main()
