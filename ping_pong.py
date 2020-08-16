@@ -1,10 +1,8 @@
 # # #        TO DO LIST
 # 1. Update reset function when we have a player selection screen
-# 2. Add player IDs + names and add match information to table
-# 3. Use time to record match duration and append it to table
-# 4. Prepare a page with statistics and best players for the moment
-# 5. Prepare game with 11 points. Change serving and overtime
-# 6. Reduce the code - move functions in another file
+# 2. Prepare a page with statistics and best players for the moment
+# 3. Prepare game with 11 points. Change serving and overtime
+# 4. Reduce the code - move functions in another file
 
 
 from time import sleep
