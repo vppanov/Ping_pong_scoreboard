@@ -1,5 +1,4 @@
 # # #        TO DO LIST
-
 # 1. Update reset function when we have a player selection screen
 # 2. Add player IDs + names and add match information to table
 # 3. Use time to record match duration and append it to table
@@ -8,10 +7,14 @@
 # 6. Reduce the code - move functions in another file
 
 
-
 from time import sleep
 from turtle import Screen, Turtle
-from math import fabs
+from math import fabs, ceil
+import sqlite3
+from datetime import date
+from timeit import default_timer
+
+exec(open('system/database.py').read())  # executing database creation file
 
 # variable for the game
 count = 0
@@ -20,7 +23,6 @@ rightScore = 0
 serve = None
 totalLeft = 0
 totalRight = 0
-
 player1 = False
 player2 = False
 playerNames = ["Веско", "Сашо", "Гери", "Георги", "Ивайло", "Друг"]
@@ -31,7 +33,8 @@ positionY = 100
 positionX = -350
 positionX2 = 100
 positionY2 = 100
-
+match_duration = None
+DATABASE_NAME = 'system/stats.db'
 
 # window screen set up
 window = Screen()
@@ -56,6 +59,21 @@ sleep(5)
 pen.clear()
 
 
+
+
+def database_update_():
+    global player2_id, player1_id, playerNames, match_duration, leftScore, rightScore
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+    c.execute(
+        'INSERT INTO Table_tennis_statistics (Player_1_Name, Player_2_Name, Player_1_Score, Player_2_Score, '
+        'Match_duration, Date) VALUES (?, ?, ?, ?, ?, ?)', [playerNames[player1_id], playerNames[player2_id], leftScore,
+                                                            rightScore, match_duration, date.today()])
+    conn.commit()
+    conn.close()
+    return c.lastrowid
+
+
 # definitions of game functions
 
 def resetscore():
@@ -68,7 +86,7 @@ def resetscore():
     pen.goto(0, -100)
     pen.write("Who is serving ?", align="center", font=("Arial", 60, "bold"))
 
-    
+
 def serveistrue():
     global leftScore, rightScore, totalLeft, totalRight
     pen.clear()
@@ -101,9 +119,14 @@ def servicecheck():
 
 
 def rightwins():
-    global rightScore, leftScore, count, totalRight, totalLeft
+    global totalLeft, totalRight, rightScore, leftScore, count, start_game, match_duration
     totalRight += 1
+    end_game = default_timer()
+    match_duration_raw = end_game - start_game
+    match_duration = ceil(match_duration_raw / 60)
+    database_update_()
     rightScore = leftScore = count = 0
+    start_game = default_timer()
     pen.goto(0, -200)
     pen.write('Right  WINS !', align="center", font=("Arial", 100, "bold"))
     pen.goto(0, -100)
@@ -118,9 +141,14 @@ def rightwins():
 
 
 def leftwins():
-    global totalLeft, totalRight, leftScore, rightScore, count
+    global totalLeft, totalRight, rightScore, leftScore, count, start_game, match_duration
     totalLeft += 1
+    end_game = default_timer()
+    match_duration_raw = end_game - start_game
+    match_duration = ceil(match_duration_raw / 60)
+    database_update_()
     leftScore = rightScore = count = 0
+    start_game = default_timer()
     pen.goto(0, -200)
     pen.write('Left  WINS !', align="center", font=("Arial", 100, "bold"))
     pen.goto(0, -100)
@@ -164,7 +192,7 @@ def servingturndisplay():
         pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center", font=("Arial", 60, "bold"))
         pen.goto(0, -100)
 
-        
+
 def printnames():
     pen.color("black")
     pen.goto(-200, 100)
@@ -377,7 +405,7 @@ pen.goto(0, 0)
 pen.write("Please choose serving player.", align="center", font=("Arial", 60, "bold"))
 sleep(1)
 
-
+start_game = default_timer()
 # game logic
 while leftScore <= 40 and rightScore <= 40:  # maximum points
     window.update()
