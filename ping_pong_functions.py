@@ -12,7 +12,8 @@
 from time import sleep
 from turtle import Screen, Turtle
 from math import fabs
-import system.functions
+
+
 # variable for the game
 count = 0
 leftScore = 0
@@ -32,11 +33,6 @@ positionX2 = 100
 positionY2 = 100
 
 
-
-
-
-
-
 # window screen set up
 window = Screen()
 window.title("Table tennis scoreboard")
@@ -52,11 +48,6 @@ pen.color("black")
 pen.hideturtle()
 pen.penup()
 
-
-
-
-
-
 #  welcome messages
 pen.goto(0, 150)
 pen.write("Welcome to scoreboard!", align="center", font=("Arial", 60, "bold"))
@@ -68,9 +59,6 @@ pen.clear()
 # definitions of game functions
 
 
-
-
-
 def resetscore():
     global serve, totalLeft, totalRight, leftScore, rightScore, count
     serve = None
@@ -80,7 +68,6 @@ def resetscore():
     pen.write("New game!", align="center", font=("Arial", 60, "bold"))
     pen.goto(0, -100)
     pen.write("Who is serving ?", align="center", font=("Arial", 60, "bold"))
-
 
 
 def serveisfalse():
@@ -167,6 +154,20 @@ def servingturndisplay():
         pen.goto(0, -100)
 
 
+def printnames():
+    pen.color("black")
+    pen.goto(-200, 100)
+    pen.write("Веско", align="center", font=("Arial", 60, "bold"))
+    pen.goto(-200, 0)
+    pen.write("Сашо", align="center", font=("Arial", 60, "bold"))
+    pen.goto(-200, -100)
+    pen.write("Гери", align="center", font=("Arial", 60, "bold"))
+    pen.goto(300, 100)
+    pen.write("Георги", align="center", font=("Arial", 60, "bold"))
+    pen.goto(300, 0)
+    pen.write("Ивайло", align="center", font=("Arial", 60, "bold"))
+    pen.goto(300, -100)
+    pen.write("Друг", align="center", font=("Arial", 60, "bold"))
 
 
 def position():
@@ -210,13 +211,14 @@ def playercheck():
     if player1_id == player2_id:
         pen.goto(0, 200)
         pen.write("Same player selected", align="center", font=("Arial", 60, "bold"))
-        system.functions.printnames()
+        printnames()
         player1 = False
         player2 = False
         player1_id = None
         player2_id = None
         sleep(3)
         pen.clear()
+
 
 def setplayer(e):
     global positionY
@@ -260,7 +262,6 @@ def setplayer(e):
         return e
 
 
-
 def serveistrue():
     global leftScore, rightScore, totalLeft, totalRight
     pen.clear()
@@ -275,16 +276,15 @@ def serveistrue():
 # game logic
 
 
-
 while True:
     window.update()
     while player1 is not True or player2 is not True:
-        system.functions.printnames()
+        printnames()
         x = input(str(input))
         if x == "n" and player1 is False:
             posCount += 1
             pen.clear()
-            system.functions.printnames()
+            printnames()
             position()
         elif x == "o" and player1 is False:
             if positionY == 0:
@@ -327,7 +327,7 @@ while True:
         elif x == "n" and player2 is False:
             posCount += 1
             pen.clear()
-            system.functions.printnames()
+            printnames()
             position()
         elif x == "o" and player2 is False:
             if positionY == 0:
@@ -367,8 +367,8 @@ while True:
                 pen.clear()
                 playercheck()
     if player1 is True and player2 is True:
-        break
         sleep(2)
+        break
 
 window.bgcolor("black")
 pen.color("white")

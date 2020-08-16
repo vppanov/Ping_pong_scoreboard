@@ -29,20 +29,3 @@ pen.penup()
 
 
 
-def printnames():
-    pen.color("black")
-    pen.goto(-200, 100)
-    pen.write("Веско", align="center", font=("Arial", 60, "bold"))
-    pen.goto(-200, 0)
-    pen.write("Сашо", align="center", font=("Arial", 60, "bold"))
-    pen.goto(-200, -100)
-    pen.write("Гери", align="center", font=("Arial", 60, "bold"))
-    pen.goto(300, 100)
-    pen.write("Георги", align="center", font=("Arial", 60, "bold"))
-    pen.goto(300, 0)
-    pen.write("Ивайло", align="center", font=("Arial", 60, "bold"))
-    pen.goto(300, -100)
-    pen.write("Друг", align="center", font=("Arial", 60, "bold"))
-
-
-
