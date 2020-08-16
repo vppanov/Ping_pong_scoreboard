@@ -9,7 +9,7 @@ buttonB = Button(26)
 
 # variable for the game
 player1 = False
-player2 = False
+player2 = None
 playerNames = ["Веско", "Сашо", "Гери", "Георги", "Ивайло", "Друг"]
 player1_id = None
 player2_id = None
@@ -143,6 +143,7 @@ while True:
             printnames()
             position()
         elif buttonB.is_active and player1 is False:
+            player2 = False
             if positionY == 100 and posCount > 0:
                 player1 = setplayer(player1)
                 player1_id = playerNames.index("Веско")
@@ -173,7 +174,6 @@ while True:
                 player1_id = playerNames.index("Друг")
                 sleep(3)
                 pen.clear()
-
         elif buttonA.is_active and player2 is False:
             posCount += 1
             pen.clear()
