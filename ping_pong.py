@@ -1,12 +1,12 @@
 # # #        TO DO LIST
-# 1. Create a player selection screen. Use the turtle pen with different shape for selection and display player names.
-# 2. Update reset function when we have a player selection screen
-# 3. Add player IDs + names and add match information to table
-# 4. Use time to record match duration and append it to table
-# 5. Prepare a page with statistics and best players for the moment
-# 6. Prepare game with 11 points. Change serving and overtime
-# 7. Validation for the same player selected.
-# 8. Ability to scroll only between players in the list
+
+# 1. Update reset function when we have a player selection screen
+# 2. Add player IDs + names and add match information to table
+# 3. Use time to record match duration and append it to table
+# 4. Prepare a page with statistics and best players for the moment
+# 5. Prepare game with 11 points. Change serving and overtime
+# 6. Reduce the code - move functions in another file
+
 
 
 from time import sleep
