@@ -134,6 +134,7 @@ def position():
 
 while True:
     window.update()
+    sleep(0.3)
     while player1 is not True or player2 is not True:
         printnames()
 
