@@ -4,7 +4,6 @@
 # 3. Reduce the code - move functions in another file
 
 
-
 from time import sleep
 from turtle import Screen, Turtle
 from math import fabs, ceil
@@ -32,10 +31,11 @@ positionX = -350
 positionX2 = 100
 positionY2 = 100
 match_duration = None
-game_state = 25
+game_state = 0
 gamepoints = 0
 servechange = 0
 penalties = 0
+start_game = None
 size = None
 DATABASE_NAME = 'system/stats.db'
 
@@ -62,7 +62,6 @@ pen.color("white")
 pen.hideturtle()
 pen.penup()
 
-
 # definitions of game functions
 
 
@@ -77,6 +76,16 @@ def database_update_():
     conn.commit()
     conn.close()
     return c.lastrowid
+
+def gameformat():
+    pen.goto(-220, 0)
+    pen.write("Бърза игра", align="center", font=("Arial", 60, "bold"))
+    pen.goto(-220, -100)
+    pen.write("Бутон А", align="center", font=("Arial", 40, "bold"))
+    pen.goto(250, 0)
+    pen.write("Нова игра", align="center", font=("Arial", 60, "bold"))
+    pen.goto(250, -100)
+    pen.write("Бутон В", align="center", font=("Arial", 40, "bold"))
 
 
 def database_update_doubles():
@@ -412,6 +421,22 @@ def serveswitch():
 
 while True:
     window.update()
+    if game_state == 0:
+        while game_state == 0:
+            gameformat()
+            v = input(str(input))
+            if v == "a":
+                gamepoints = 21
+                servechange = 4
+                penalties = 20
+                player1_id = 0
+                player2_id = 1
+                buttonAcolor()
+                size = False
+                game_state = 150
+            elif v == "b":
+                buttonBcolor()
+                game_state = 25
     if game_state == 25:
         while game_state == 25:
             gametype()
@@ -441,7 +466,7 @@ while True:
                 gamepoints = 21
                 servechange = 4
                 penalties = 20
-                game_state = 100
+                game_state = 150
                 buttonAcolor()
             elif z == "b":
                 gamepoints = 11
