@@ -33,15 +33,17 @@ positionX = -350
 positionX2 = 100
 positionY2 = 100
 match_duration = None
-game_state = 0
+game_state = 25
 gamepoints = 0
 servechange = 0
 penalties = 0
+size = None
 DATABASE_NAME = 'system/stats.db'
 
 
 # # # Game states ####
 # 0 - choose game play
+# 25 - choose game type
 # 50 - choose game size
 # 100 - choose players
 # 150 - random service
@@ -61,8 +63,6 @@ pen.color("white")
 pen.hideturtle()
 pen.penup()
 
-#  welcome messages
-
 
 # definitions of game functions
 
@@ -80,6 +80,32 @@ def database_update_():
     return c.lastrowid
 
 
+def database_update_doubles():
+    global player2_id, player1_id, playerNames, match_duration, leftScore, rightScore
+    teamA = playerNames[player1_id] + "-отбор"
+    teamB = playerNames[player2_id] + "-отбор"
+    conn = sqlite3.connect(DATABASE_NAME)
+    c = conn.cursor()
+    c.execute(
+        'INSERT INTO Table_tennis_statistics (Player_1_Name, Player_2_Name, Player_1_Score, Player_2_Score, '
+        'Match_duration, Date) VALUES (?, ?, ?, ?, ?, ?)', [teamA, teamB, leftScore,
+                                                            rightScore, match_duration, date.today()])
+    conn.commit()
+    conn.close()
+    return c.lastrowid
+
+
+def gametype():
+    pen.goto(-220, 0)
+    pen.write("Единици", align="center", font=("Arial", 60, "bold"))
+    pen.goto(-220, -100)
+    pen.write("Бутон А", align="center", font=("Arial", 40, "bold"))
+    pen.goto(250, 0)
+    pen.write("Двойки", align="center", font=("Arial", 60, "bold"))
+    pen.goto(250, -100)
+    pen.write("Бутон В", align="center", font=("Arial", 40, "bold"))
+
+
 def gamesize():
     pen.goto(-220, 0)
     pen.write("Голям гейм", align="center", font=("Arial", 60, "bold"))
@@ -89,6 +115,7 @@ def gamesize():
     pen.write("Малък гейм", align="center", font=("Arial", 60, "bold"))
     pen.goto(250, -100)
     pen.write("Бутон В", align="center", font=("Arial", 40, "bold"))
+
 
 def buttonAcolor():
     pen.color("red")
@@ -112,9 +139,9 @@ def resetgame():
     window.bgcolor("black")
     pen.color("white")
     global serve, totalLeft, totalRight, leftScore, rightScore, count, game_state, player1, player2, posCount, \
-        positionX, positionY, positionX2, positionY2, player1_id, player2_id
+        positionX, positionY, positionX2, positionY2, player1_id, player2_id, size
     serve = None
-    game_state = totalLeft = totalRight = leftScore = rightScore = count = 0
+    totalLeft = totalRight = leftScore = rightScore = count = 0
     pen.clear()
     pen.goto(0, 220)
     pen.write("Нова игра!", align="center", font=("Arial", 60, "bold"))
@@ -123,11 +150,13 @@ def resetgame():
     player2 = False
     player1_id = None
     player2_id = None
+    size = None
     posCount = 0
     positionY = 100
     positionX = -350
     positionX2 = 100
     positionY2 = 100
+    game_state = 25
 
 
 def serveistrue():
@@ -173,7 +202,10 @@ def rightwins():
     end_game = default_timer()
     match_duration_raw = end_game - start_game
     match_duration = ceil(match_duration_raw / 60)
-    database_update_()
+    if size is True:
+        database_update_doubles()
+    elif size is False:
+        database_update_()
     rightScore = leftScore = count = 0
     start_game = default_timer()
     pen.goto(0, -200)
@@ -199,7 +231,10 @@ def leftwins():
     end_game = default_timer()
     match_duration_raw = end_game - start_game
     match_duration = ceil(match_duration_raw / 60)
-    database_update_()
+    if size is True:
+        database_update_doubles()
+    elif size is False:
+        database_update_()
     leftScore = rightScore = count = 0
     start_game = default_timer()
     pen.goto(0, -200)
@@ -272,7 +307,6 @@ def printnames():
     pen.goto(0, -240)
     pen.write("Потвърди - Бутон Б", align="center", font=("Arial", 40, "bold"))
     pen.goto(0, -180)
-
 
 
 def position():
@@ -379,6 +413,26 @@ def serveswitch():
 
 while True:
     window.update()
+    if game_state == 25:
+        while game_state == 25:
+            gametype()
+            z = input(str(input))
+            if z == "r":  # command to close window
+                resetgame()
+            elif z == "a":  # singles
+                game_state = 50
+                size = False
+                buttonAcolor()
+            elif z == "b":  # doubles
+                gamepoints = 21
+                servechange = 4
+                penalties = 20
+                game_state = 100
+                size = True
+                buttonBcolor()
+            elif z == "q":  # command to close window
+                window.bye()
+
     if game_state == 50:
         while game_state == 50:
             gamesize()
