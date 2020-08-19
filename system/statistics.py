@@ -1,8 +1,11 @@
 import os
 from PyQt5 import QtCore, QtGui, QtWidgets, QtSql
 
-
 class BlobDelegate(QtWidgets.QStyledItemDelegate):
+    def initStyleOption(self, option, index):
+        super(BlobDelegate, self).initStyleOption(option, index)
+        option.displayAlignment = QtCore.Qt.AlignCenter
+
     def displayText(self, value, locale):
         if isinstance(value, QtCore.QByteArray):
             value = value.data().decode()
@@ -37,6 +40,7 @@ if __name__ == "__main__":
     if not createConnection():
         sys.exit(-1)
     w = QtWidgets.QTableView()
+
     w.setFont(QtGui.QFont('Arial', 18))
     w.horizontalHeader().setStretchLastSection(False)
     w.horizontalHeader().setFixedHeight(40)
@@ -49,5 +53,7 @@ if __name__ == "__main__":
     model.setQuery("SELECT * FROM table_tennis_statistics")
     w.setModel(model)
     w.resize(1024, 600)
+    delegate = BlobDelegate(w)
+    w.setItemDelegate(delegate)
     w.show()
     sys.exit(app.exec_())
