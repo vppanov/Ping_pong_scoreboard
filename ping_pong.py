@@ -80,6 +80,7 @@ def database_update_():
     return c.lastrowid
 
 
+
 def resetgame():
     window.bgcolor("white")
     pen.color("black")
@@ -127,8 +128,8 @@ def serveisfalse():
 
 
 def servicecheck():
-    global serve, count
-    if count == 4:
+    global serve, count, servechange
+    if count == servechange:
         serve = not serve
         count = -1  # resetting the counter to negative number to handle service turn
 
@@ -427,6 +428,20 @@ while True:
     pen.write("Please choose serving player.", align="center", font=("Arial", 60, "bold"))
     sleep(1)
     start_game = default_timer()
+    while game_state == 50:
+        z = input(str(input))
+        if z == "q":  # command to close window
+            window.bye()
+        elif z == "1":
+            gamepoints = 21
+            servechange = 4
+            penalties = 20
+            game_state = 100
+        elif z == "2":
+            gamepoints = 11
+            servechange = 1
+            penalties = 10
+            game_state = 100
     while game_state == 100:
         z = input(str(input))
         if z == "q":  # command to close window
@@ -440,8 +455,8 @@ while True:
             servingturndisplay()
             game_state = 200
     while game_state == 200:
-        if leftScore >= 20 and rightScore >= 20:
-            while leftScore >= 20 and rightScore >= 20:  # handling overtime
+        if leftScore >= penalties and rightScore >= penalties:
+            while leftScore >= penalties and rightScore >= penalties:  # handling overtime
                 serveswitch()
                 x = input(str(input))
                 if x == "r":  # reset result
@@ -472,9 +487,9 @@ while True:
                             serve = False
                 else:
                     wronginput()  # handling wrong keyboard input
-        if leftScore == 21:  # left wins
+        if leftScore == gamepoints:  # left wins
             leftwins()
-        elif rightScore == 21:  # right wins
+        elif rightScore == gamepoints:  # right wins
             rightwins()
         else:
             x = input(str(input))
