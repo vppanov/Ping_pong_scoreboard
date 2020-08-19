@@ -1,9 +1,8 @@
 # # #        TO DO LIST
 # 1. Prepare a working variant for raspberry + sleep time
-# 2. Prepare a page with statistics and best players for the moment
-# 3. Prepare game with 11 points. Change serving and overtime
-# 4. Reduce the code - move functions in another file
-# 5. Translate game text
+# 2. Create 3 player logic
+# 3. Reduce the code - move functions in another file
+
 
 
 from time import sleep
@@ -143,7 +142,7 @@ def resetgame():
     serve = None
     totalLeft = totalRight = leftScore = rightScore = count = 0
     pen.clear()
-    pen.goto(0, 220)
+    pen.goto(0, 200)
     pen.write("Нова игра!", align="center", font=("Arial", 60, "bold"))
     pen.goto(0, -100)
     player1 = False
@@ -258,7 +257,7 @@ def wronginput():
     global count
     count -= 1
     pen.goto(0, 150)
-    pen.write("Wrong input ", align="center", font=("Arial", 60, "bold"))
+    pen.write("Грешен бутон", align="center", font=("Arial", 60, "bold"))
     pen.goto(0, -100)
 
 
@@ -355,7 +354,7 @@ def playercheck():
         player2 = False
         player1_id = None
         player2_id = None
-        sleep(3)
+        sleep(1)
         pen.clear()
 
 
@@ -432,7 +431,6 @@ while True:
                 buttonBcolor()
             elif z == "q":  # command to close window
                 window.bye()
-
     if game_state == 50:
         while game_state == 50:
             gamesize()
@@ -544,88 +542,87 @@ while True:
         if player1 is True and player2 is True:
             game_state = 150
             sleep(1)
-
-    window.bgcolor("black")
     pen.color("white")
     pen.goto(0, 0)
     pen.write("Please choose serving player.", align="center", font=("Arial", 60, "bold"))
     sleep(1)
     start_game = default_timer()
-
-    while game_state == 150:
-        z = input(str(input))
-        if z == "q":  # command to close window
-            window.bye()
-        elif z == "1":
-            serve = True  # serving left player
-            servingturndisplay()
-            game_state = 200
-        elif z == "2":
-            serve = False  # serving right player
-            servingturndisplay()
-            game_state = 200
-    while game_state == 200:
-        if leftScore >= penalties and rightScore >= penalties:
-            while leftScore >= penalties and rightScore >= penalties:  # handling overtime
-                serveswitch()
+    if game_state == 150:
+        while game_state == 150:
+            z = input(str(input))
+            if z == "q":  # command to close window
+                window.bye()
+            elif z == "a":
+                serve = True  # serving left player
+                servingturndisplay()
+                game_state = 200
+            elif z == "b":
+                serve = False  # serving right player
+                servingturndisplay()
+                game_state = 200
+    if game_state == 200:
+        while game_state == 200:
+            if leftScore >= penalties and rightScore >= penalties:
+                while leftScore >= penalties and rightScore >= penalties:  # handling overtime
+                    serveswitch()
+                    x = input(str(input))
+                    if x == "r":  # reset result
+                        resetgame()
+                    elif x == "a":  # point for left player
+                        leftScore += 1
+                        if serve is True:
+                            serveistrue()
+                            if fabs(rightScore - leftScore) == 2:  # checking for two points difference
+                                leftwins()  # game ends
+                                serve = True  # assigning serve turn for next game
+                        elif serve is False:
+                            serveisfalse()
+                            if fabs(leftScore - rightScore) == 2:
+                                leftwins()
+                                serve = True  # assigning serve turn for next game
+                    elif x == "b":  # point for right  player
+                        rightScore += 1
+                        if serve is True:
+                            serveistrue()
+                            if fabs(leftScore - rightScore) == 2:  # checking for two points difference
+                                rightwins()
+                                serve = False
+                        elif serve is False:
+                            serveisfalse()
+                            if fabs(leftScore - rightScore) == 2:  # checking for two points difference
+                                rightwins()
+                                serve = False
+                    else:
+                        wronginput()  # handling wrong keyboard input
+            elif leftScore == gamepoints:  # left wins
+                leftwins()
+            elif rightScore == gamepoints:  # right wins
+                rightwins()
+            else:
                 x = input(str(input))
+                count += 1
                 if x == "r":  # reset result
                     resetgame()
-                elif x == "4":  # point for left player
+                    sleep(1)
+                elif x == "a":  # point for left player
                     leftScore += 1
                     if serve is True:
                         serveistrue()
-                        if fabs(rightScore - leftScore) == 2:  # checking for two points difference
-                            leftwins()  # game ends
-                            serve = True  # assigning serve turn for next game
+                        servicecheck()
                     elif serve is False:
                         serveisfalse()
-                        if fabs(leftScore - rightScore) == 2:
-                            leftwins()
-                            serve = True  # assigning serve turn for next game
-                elif x == "5":  # point for right  player
+                        servicecheck()
+                elif x == "b":  # point for right  player
                     rightScore += 1
                     if serve is True:
                         serveistrue()
-                        if fabs(leftScore - rightScore) == 2:  # checking for two points difference
-                            rightwins()
-                            serve = False
+                        servicecheck()
                     elif serve is False:
                         serveisfalse()
-                        if fabs(leftScore - rightScore) == 2:  # checking for two points difference
-                            rightwins()
-                            serve = False
+                        servicecheck()
+                elif x == "q":  # close program
+                    window.bye()
+                    break
                 else:
                     wronginput()  # handling wrong keyboard input
-        if leftScore == gamepoints:  # left wins
-            leftwins()
-        elif rightScore == gamepoints:  # right wins
-            rightwins()
-        else:
-            x = input(str(input))
-            count += 1
-            if x == "r":  # reset result
-                resetgame()
-                sleep(3)
-            elif x == "4":  # point for left player
-                leftScore += 1
-                if serve is True:
-                    serveistrue()
-                    servicecheck()
-                elif serve is False:
-                    serveisfalse()
-                    servicecheck()
-            elif x == "5":  # point for right  player
-                rightScore += 1
-                if serve is True:
-                    serveistrue()
-                    servicecheck()
-                elif serve is False:
-                    serveisfalse()
-                    servicecheck()
-            elif x == "q":  # close program
-                window.bye()
-                break
-            else:
-                wronginput()  # handling wrong keyboard input
 window.bye()
