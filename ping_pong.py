@@ -44,6 +44,7 @@ DATABASE_NAME = 'system/stats.db'
 # 0 - choose game play
 # 50 - choose game size
 # 100 - choose players
+# 150 - random service
 # 200 - in game
 
 # window screen set up
@@ -378,8 +379,8 @@ def serveswitch():
 
 while True:
     window.update()
-    if game_state == 0:
-        while game_state == 0:
+    if game_state == 50:
+        while game_state == 50:
             gamesize()
             z = input(str(input))
             if z == "r":  # command to close window
@@ -388,17 +389,17 @@ while True:
                 gamepoints = 21
                 servechange = 4
                 penalties = 20
-                game_state = 50
+                game_state = 100
                 buttonAcolor()
             elif z == "b":
                 gamepoints = 11
                 servechange = 1
                 penalties = 10
-                game_state = 50
+                game_state = 100
                 buttonBcolor()
             elif z == "q":  # command to close window
                 window.bye()
-    if game_state == 50:
+    if game_state == 100:
         while player1 is not True or player2 is not True:
             printnames()
             x = input(str(input))
@@ -487,7 +488,7 @@ while True:
                     pen.clear()
                     playercheck()
         if player1 is True and player2 is True:
-            game_state = 100
+            game_state = 150
             sleep(1)
 
     window.bgcolor("black")
@@ -497,7 +498,7 @@ while True:
     sleep(1)
     start_game = default_timer()
 
-    while game_state == 100:
+    while game_state == 150:
         z = input(str(input))
         if z == "q":  # command to close window
             window.bye()
