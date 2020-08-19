@@ -2,7 +2,7 @@
 # 1. Prepare a working variant for raspberry + sleep time
 # 2. Create 3 player logic
 # 3. Reduce the code - move functions in another file
-# 5. Translate game text
+
 
 
 from time import sleep
