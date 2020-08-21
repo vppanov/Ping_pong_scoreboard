@@ -51,7 +51,7 @@ if __name__ == "__main__":
     delegate = BlobDelegate(w)
     w.setItemDelegateForColumn(4, delegate)
     model = QtSql.QSqlQueryModel()
-    model.setQuery("SELECT * FROM table_tennis_statistics")
+    model.setQuery("SELECT * FROM Singles_statistics")
     w.setModel(model)
     w.resize(1024, 600)
     delegate = BlobDelegate(w)

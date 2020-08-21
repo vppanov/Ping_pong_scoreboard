@@ -22,9 +22,13 @@ totalLeft = 0
 totalRight = 0
 player1 = False
 player2 = False
+player3 = None
+player4 = None
 playerNames = ["Веско", "Сашо", "Гери", "Георги", "Ивайло", "Друг"]
 player1_id = None
 player2_id = None
+player3_id = None
+player4_id = None
 posCount = 0
 positionY = 100
 positionX = -350
@@ -91,13 +95,13 @@ def gameformat():
 
 
 def database_update_doubles():
-    global player2_id, player1_id, playerNames, match_duration, leftScore, rightScore
-    teamA = playerNames[player1_id] + "-отбор"
-    teamB = playerNames[player2_id] + "-отбор"
+    global player1_id, player2_id, player3_id, player4_id, playerNames, match_duration, leftScore, rightScore
+    teamA = playerNames[player1_id] + playerNames[player2_id]
+    teamB = playerNames[player3_id] + playerNames[player4_id]
     conn = sqlite3.connect(DATABASE_NAME)
     c = conn.cursor()
     c.execute(
-        'INSERT INTO Table_tennis_statistics (Player_1_Name, Player_2_Name, Player_1_Score, Player_2_Score, '
+        'INSERT INTO Table_tennis_statistics (Team_1_Name, Team_2_Name, Team_1_Score, Team_2_Score, '
         'Match_duration, Date) VALUES (?, ?, ?, ?, ?, ?)', [teamA, teamB, leftScore,
                                                             rightScore, match_duration, date.today()])
     conn.commit()
@@ -166,7 +170,7 @@ def resetgame():
     positionX = -350
     positionX2 = 100
     positionY2 = 100
-    game_state = 25
+    game_state = 0
 
 
 def totalscore():
@@ -267,7 +271,10 @@ def rightwins():
     pen.goto(0, -100)
     sleep(5)
     pen.clear()
-    player1_id, player2_id = player2_id, player1_id
+    if size is True:
+        player1_id, player2_id = player3_id, player4_id
+    elif size is False:
+        player1_id, player2_id = player2_id, player1_id
     totalLeft, totalRight = totalRight, totalLeft
     pen.color("green")
     pen.goto(400, -100)
@@ -297,7 +304,10 @@ def leftwins():
     pen.goto(0, -100)
     sleep(5)
     pen.clear()
-    player1_id, player2_id = player2_id, player1_id
+    if size is True:
+        player1_id, player2_id = player3_id, player4_id
+    elif size is False:
+        player1_id, player2_id = player2_id, player1_id
     totalLeft, totalRight = totalRight, totalLeft
     pen.color("green")
     pen.goto(-400, -100)
@@ -313,9 +323,11 @@ def leftwins():
 def wronginput():
     global count
     count -= 1
+    pen.color("red")
     pen.goto(0, 150)
     pen.write("Грешен бутон", align="center", font=("Arial", 60, "bold"))
     pen.goto(0, -100)
+    pen.color("green")
 
 
 def servingturndisplay():
@@ -463,7 +475,6 @@ def serveswitch():
 
 
 while True:
-
     if game_state == 0:
         while game_state == 0:
             gameformat()
@@ -476,31 +487,31 @@ while True:
                 player2_id = 1
                 buttonAcolor()
                 size = False
-                game_state = 150
+                game_state = 200
             elif v == "b":
                 buttonBcolor()
-                game_state = 25
-    if game_state == 25:
-        while game_state == 25:
+                game_state = 50
+    if game_state == 50:
+        while game_state == 50:
             gametype()
             z = input(str(input))
             if z == "r":  # command to close window
                 resetgame()
             elif z == "a":  # singles
-                game_state = 50
+                game_state = 100
                 size = False
                 buttonAcolor()
             elif z == "b":  # doubles
+                size = True
                 gamepoints = 21
                 servechange = 4
                 penalties = 20
-                game_state = 100
-                serve = [True, False]
+                game_state = 150
                 buttonBcolor()
             elif z == "q":  # command to close window
                 window.bye()
-    if game_state == 50:
-        while game_state == 50:
+    if game_state == 100:
+        while game_state == 100:
             gamesize()
             z = input(str(input))
             if z == "r":  # command to close window
@@ -515,11 +526,11 @@ while True:
                 gamepoints = 11
                 servechange = 1
                 penalties = 10
-                game_state = 100
+                game_state = 150
                 buttonBcolor()
             elif z == "q":  # command to close window
                 window.bye()
-    if game_state == 100:
+    if game_state == 150:
         while player1 is not True or player2 is not True:
             printnames()
             x = input(str(input))
@@ -608,16 +619,16 @@ while True:
                     pen.clear()
                     playercheck()
         if player1 is True and player2 is True:
-            game_state = 150
+            game_state = 200
             sleep(1)
     sleep(1)
     start_game = default_timer()
-    if game_state == 150:
-        serve = choice(serve)
-        game_state = 200
     if game_state == 200:
+        serve = choice(serve)
+        game_state = 250
+    if game_state == 250:
         servingturndisplay()
-        while game_state == 200:
+        while game_state == 250:
             window.update()
             if leftScore >= penalties and rightScore >= penalties:
                 while leftScore >= penalties and rightScore >= penalties:  # handling overtime
