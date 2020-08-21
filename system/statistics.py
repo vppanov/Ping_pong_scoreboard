@@ -1,6 +1,7 @@
 import os
 from PyQt5 import QtCore, QtGui, QtWidgets, QtSql
 
+
 class BlobDelegate(QtWidgets.QStyledItemDelegate):
     def initStyleOption(self, option, index):
         super(BlobDelegate, self).initStyleOption(option, index)

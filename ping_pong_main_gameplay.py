@@ -56,8 +56,34 @@ def resetscore():
 def serveistrue():
     global leftScore, rightScore, totalLeft, totalRight
     pen.clear()
-    pen.color("green")
-    pen.write("> {} : {} ".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+    if leftScore <= 9 and rightScore <= 9:
+        pen.color("green")
+        pen.goto(-400, -100)
+        pen.write(">", align="center", font=("Arial", 200, "bold"))
+        pen.goto(0, -100)
+        pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+        pen.goto(0, 220)
+    if leftScore >= 10 and rightScore <= 9:
+        pen.color("green")
+        pen.goto(-400, -100)
+        pen.write(">", align="center", font=("Arial", 200, "bold"))
+        pen.goto(0, -100)
+        pen.write("{} : {}  ".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+        pen.goto(0, 220)
+    if rightScore >= 10 and leftScore <= 9:
+        pen.color("green")
+        pen.goto(-400, -100)
+        pen.write(">", align="center", font=("Arial", 200, "bold"))
+        pen.goto(0, -100)
+        pen.write("  {} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+        pen.goto(0, 220)
+    if rightScore >= 10 and leftScore >= 10:
+        pen.color("green")
+        pen.goto(-400, -100)
+        pen.write(">", align="center", font=("Arial", 200, "bold"))
+        pen.goto(0, -100)
+        pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+        pen.goto(0, 220)
     pen.goto(0, 220)
     pen.color("white")
     pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center",
@@ -68,9 +94,34 @@ def serveistrue():
 def serveisfalse():
     global leftScore, rightScore, totalLeft, totalRight
     pen.clear()
-    pen.color("green")
-    pen.write(" {} : {} <".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
-    pen.goto(0, 220)
+    if leftScore <=9 and rightScore <=9:
+        pen.color("green")
+        pen.goto(400, -100)
+        pen.write("<", align="center", font=("Arial", 200, "bold"))
+        pen.goto(0, -100)
+        pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+        pen.goto(0, 220)
+    if leftScore >= 10 and rightScore <=9:
+        pen.color("green")
+        pen.goto(400, -100)
+        pen.write("<", align="center", font=("Arial", 200, "bold"))
+        pen.goto(0, -100)
+        pen.write("{} : {}  ".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+        pen.goto(0, 220)
+    if rightScore >= 10 and leftScore <=9:
+        pen.color("green")
+        pen.goto(400, -100)
+        pen.write("<", align="center", font=("Arial", 200, "bold"))
+        pen.goto(0, -100)
+        pen.write("  {} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+        pen.goto(0, 220)
+    if rightScore >=10 and leftScore >=10:
+        pen.color("green")
+        pen.goto(400, -100)
+        pen.write("<", align="center", font=("Arial", 200, "bold"))
+        pen.goto(0, -100)
+        pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+        pen.goto(0, 220)
     pen.color("white")
     pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center",
               font=("Arial", 60, "bold"))
@@ -123,19 +174,34 @@ def servingturndisplay():
     global serve, leftScore, rightScore, totalLeft, totalLeft
     if serve:
         pen.clear()
-        pen.color("green")
-        pen.write("> {} : {} ".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
-        pen.goto(0, 220)
+
+        if leftScore >=10:
+            pen.color("green")
+            pen.goto(-400, -100)
+            pen.write(">", align="center", font=("Arial", 200, "bold"))
+            pen.goto(0, -100)
+            pen.write("{} : {} ".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+            pen.goto(0, 220)
+        else:
+            pen.color("green")
+            pen.goto(-400, -100)
+            pen.write(">", align="center", font=("Arial", 200, "bold"))
+            pen.goto(0, -100)
+            pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+            pen.goto(0, 220)
         pen.color("white")
-        pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center", font=("Arial", 60, "bold"))
+        pen.write("Общ резултат {} : {}".format(totalLeft, totalRight), align="center", font=("Arial", 60, "bold"))
         pen.goto(0, -100)
     elif not serve:
         pen.clear()
         pen.color("green")
-        pen.write(" {} : {} <".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+        pen.goto(400, -100)
+        pen.write("<", align="center", font=("Arial", 200, "bold"))
+        pen.goto(0, -100)
+        pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
         pen.goto(0, 220)
         pen.color("white")
-        pen.write("Total score {} : {}".format(totalLeft, totalRight), align="center", font=("Arial", 60, "bold"))
+        pen.write("Общ резултат {} : {}".format(totalLeft, totalRight), align="center", font=("Arial", 60, "bold"))
         pen.goto(0, -100)
 
 
