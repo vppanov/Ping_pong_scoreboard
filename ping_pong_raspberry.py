@@ -11,6 +11,7 @@ import sqlite3
 from datetime import date
 from timeit import default_timer
 from random import choice
+import system.functions
 exec(open('system/database.py').read())  # executing database creation file
 
 # variable for the game
@@ -145,28 +146,6 @@ def buttonBcolor():
     pen.clear()
 
 
-def resetgame():
-    window.bgcolor("black")
-    pen.color("white")
-    global serve, totalLeft, totalRight, leftScore, rightScore, count, game_state, player1, player2, posCount, \
-        positionX, positionY, positionX2, positionY2, player1_id, player2_id, size
-    serve = [True, False]
-    totalLeft = totalRight = leftScore = rightScore = count = 0
-    pen.clear()
-    pen.goto(0, 200)
-    pen.write("Нова игра!", align="center", font=("Arial", 60, "bold"))
-    pen.goto(0, -100)
-    player1 = False
-    player2 = False
-    player1_id = None
-    player2_id = None
-    size = None
-    posCount = 0
-    positionY = 100
-    positionX = -350
-    positionX2 = 100
-    positionY2 = 100
-    game_state = 25
 
 
 def totalscore():
@@ -310,12 +289,7 @@ def leftwins():
     servingturndisplay()
 
 
-def wronginput():
-    global count
-    count -= 1
-    pen.goto(0, 150)
-    pen.write("Грешен бутон", align="center", font=("Arial", 60, "bold"))
-    pen.goto(0, -100)
+
 
 
 def servingturndisplay():
@@ -485,7 +459,7 @@ while True:
             gametype()
             z = input(str(input))
             if z == "r":  # command to close window
-                resetgame()
+                system.functions.resetgame()
             elif z == "a":  # singles
                 game_state = 50
                 size = False
@@ -504,7 +478,7 @@ while True:
             gamesize()
             z = input(str(input))
             if z == "r":  # command to close window
-                resetgame()
+                system.functions.resetgame()
             elif z == "a":
                 gamepoints = 21
                 servechange = 4
@@ -624,7 +598,7 @@ while True:
                     serveswitch()
                     x = input(str(input))
                     if x == "r":  # reset result
-                        resetgame()
+                        system.functions.resetgame()
                     elif x == "a":  # point for left player
                         leftScore += 1
                         if serve is True:
@@ -650,7 +624,7 @@ while True:
                                 rightwins()
                                 serve = False
                     else:
-                        wronginput()  # handling wrong keyboard input
+                        system.functions.wronginput()  # handling wrong keyboard input
             elif leftScore == gamepoints:  # left wins
                 leftwins()
             elif rightScore == gamepoints:  # right wins
@@ -659,7 +633,7 @@ while True:
                 x = input(str(input))
                 count += 1
                 if x == "r":  # reset result
-                    resetgame()
+                    system.functions.resetgame()
                     sleep(1)
                 elif x == "a":  # point for left player
                     leftScore += 1
@@ -681,5 +655,5 @@ while True:
                     window.bye()
                     break
                 else:
-                    wronginput()  # handling wrong keyboard input
+                    system.functions.wronginput()  # handling wrong keyboard input
 window.bye()
