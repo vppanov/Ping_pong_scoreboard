@@ -10,14 +10,14 @@ from math import fabs, ceil
 import sqlite3
 from datetime import date
 from timeit import default_timer
-
+from random import choice
 exec(open('system/database.py').read())  # executing database creation file
 
 # variable for the game
 count = 0
 leftScore = 0
 rightScore = 0
-serve = None
+serve = [True, False]
 totalLeft = 0
 totalRight = 0
 player1 = False
@@ -42,17 +42,18 @@ DATABASE_NAME = 'system/stats.db'
 
 # # # Game states ####
 # 0 - choose game play
-# 25 - choose game type
-# 50 - choose game size
-# 100 - choose players
-# 150 - random service
-# 200 - in game
+# 50 - choose game type
+# 100 - choose game size
+# 150 - choose players
+# 200 - random service
+# 250 - in game
 
 # window screen set up
 window = Screen()
 window.title("Table tennis scoreboard")
 window.bgcolor("black")
 window.setup(width=1024, height=600)
+window.delay(0)
 window.tracer(0)
 
 # turtle set up
@@ -76,6 +77,7 @@ def database_update_():
     conn.commit()
     conn.close()
     return c.lastrowid
+
 
 def gameformat():
     pen.goto(-220, 0)
@@ -148,7 +150,7 @@ def resetgame():
     pen.color("white")
     global serve, totalLeft, totalRight, leftScore, rightScore, count, game_state, player1, player2, posCount, \
         positionX, positionY, positionX2, positionY2, player1_id, player2_id, size
-    serve = None
+    serve = [True, False]
     totalLeft = totalRight = leftScore = rightScore = count = 0
     pen.clear()
     pen.goto(0, 200)
@@ -167,34 +169,78 @@ def resetgame():
     game_state = 25
 
 
-def serveistrue():
-    global leftScore, rightScore, totalLeft, totalRight
-    pen.clear()
-    pen.color("green")
-    pen.goto(-400, -100)
-    pen.write(">", align="center", font=("Arial", 200, "bold"))
-    pen.goto(0, -100)
-    pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+def totalscore():
     pen.goto(0, 220)
     pen.color("white")
     pen.write("Общ резултат {} : {}".format(totalLeft, totalRight), align="center",
               font=("Arial", 60, "bold"))
     pen.goto(0, -100)
+
+
+def serveistrue():
+    global leftScore, rightScore, totalLeft, totalRight
+    pen.clear()
+    if leftScore <= 9 and rightScore <= 9:
+        totalscore()
+        pen.color("green")
+        pen.goto(-400, -100)
+        pen.write(">", align="center", font=("Arial", 200, "bold"))
+        pen.goto(0, -100)
+        pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+    elif leftScore >= 10 and rightScore <= 9:
+        totalscore()
+        pen.color("green")
+        pen.goto(-400, -100)
+        pen.write(">", align="center", font=("Arial", 200, "bold"))
+        pen.goto(0, -100)
+        pen.write("{} : {}  ".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+    elif rightScore >= 10 and leftScore <= 9:
+        totalscore()
+        pen.color("green")
+        pen.goto(-400, -100)
+        pen.write(">", align="center", font=("Arial", 200, "bold"))
+        pen.goto(0, -100)
+        pen.write("  {} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+    elif rightScore >= 10 and leftScore >= 10:
+        totalscore()
+        pen.color("green")
+        pen.goto(-400, -100)
+        pen.write(">", align="center", font=("Arial", 200, "bold"))
+        pen.goto(0, -100)
+        pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
 
 
 def serveisfalse():
     global leftScore, rightScore, totalLeft, totalRight
     pen.clear()
-    pen.color("green")
-    pen.goto(400, -100)
-    pen.write("<", align="center", font=("Arial", 200, "bold"))
-    pen.goto(0, -100)
-    pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
-    pen.goto(0, 220)
-    pen.color("white")
-    pen.write("Общ резултат {} : {}".format(totalLeft, totalRight), align="center",
-              font=("Arial", 60, "bold"))
-    pen.goto(0, -100)
+    if leftScore <= 9 and rightScore <= 9:
+        totalscore()
+        pen.color("green")
+        pen.goto(400, -100)
+        pen.write("<", align="center", font=("Arial", 200, "bold"))
+        pen.goto(0, -100)
+        pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+    elif leftScore >= 10 and rightScore <= 9:
+        totalscore()
+        pen.color("green")
+        pen.goto(400, -100)
+        pen.write("<", align="center", font=("Arial", 200, "bold"))
+        pen.goto(0, -100)
+        pen.write("{} : {}  ".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+    elif rightScore >= 10 and leftScore <= 9:
+        totalscore()
+        pen.color("green")
+        pen.goto(400, -100)
+        pen.write("<", align="center", font=("Arial", 200, "bold"))
+        pen.goto(0, -100)
+        pen.write("  {} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+    elif rightScore >= 10 and leftScore >= 10:
+        totalscore()
+        pen.color("green")
+        pen.goto(400, -100)
+        pen.write("<", align="center", font=("Arial", 200, "bold"))
+        pen.goto(0, -100)
+        pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
 
 
 def servicecheck():
@@ -205,7 +251,7 @@ def servicecheck():
 
 
 def rightwins():
-    global totalLeft, totalRight, rightScore, leftScore, count, start_game, match_duration
+    global totalLeft, totalRight, rightScore, leftScore, count, start_game, match_duration, player1_id, player2_id
     totalRight += 1
     end_game = default_timer()
     match_duration_raw = end_game - start_game
@@ -221,20 +267,21 @@ def rightwins():
     pen.goto(0, -100)
     sleep(5)
     pen.clear()
+    player1_id, player2_id = player2_id, player1_id
+    totalLeft, totalRight = totalRight, totalLeft
     pen.color("green")
     pen.goto(400, -100)
     pen.write("<", align="center", font=("Arial", 200, "bold"))
     pen.goto(0, -100)
     pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
-    pen.goto(0, 220)
-    pen.color("white")
-    pen.write("Общ резултат {} : {}".format(totalLeft, totalRight), align="center",
-              font=("Arial", 60, "bold"))
-    pen.goto(0, -100)
+    totalscore()
+    pen.clear()
+    serveswitch()
+    servingturndisplay()
 
 
 def leftwins():
-    global totalLeft, totalRight, rightScore, leftScore, count, start_game, match_duration
+    global totalLeft, totalRight, rightScore, leftScore, count, start_game, match_duration, player1_id, player2_id
     totalLeft += 1
     end_game = default_timer()
     match_duration_raw = end_game - start_game
@@ -250,16 +297,17 @@ def leftwins():
     pen.goto(0, -100)
     sleep(5)
     pen.clear()
+    player1_id, player2_id = player2_id, player1_id
+    totalLeft, totalRight = totalRight, totalLeft
     pen.color("green")
     pen.goto(-400, -100)
     pen.write(">", align="center", font=("Arial", 200, "bold"))
     pen.goto(0, -100)
     pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
-    pen.goto(0, 220)
-    pen.color("white")
-    pen.write("Общ резултат {} : {}".format(totalLeft, totalRight), align="center",
-              font=("Arial", 60, "bold"))
-    pen.goto(0, -100)
+    totalscore()
+    pen.clear()
+    serveswitch()
+    servingturndisplay()
 
 
 def wronginput():
@@ -279,10 +327,8 @@ def servingturndisplay():
         pen.write(">", align="center", font=("Arial", 200, "bold"))
         pen.goto(0, -100)
         pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
-        pen.goto(0, 220)
-        pen.color("white")
-        pen.write("Общ резултат {} : {}".format(totalLeft, totalRight), align="center", font=("Arial", 60, "bold"))
-        pen.goto(0, -100)
+        totalscore()
+
     elif not serve:
         pen.clear()
         pen.color("green")
@@ -290,10 +336,7 @@ def servingturndisplay():
         pen.write("<", align="center", font=("Arial", 200, "bold"))
         pen.goto(0, -100)
         pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
-        pen.goto(0, 220)
-        pen.color("white")
-        pen.write("Общ резултат {} : {}".format(totalLeft, totalRight), align="center", font=("Arial", 60, "bold"))
-        pen.goto(0, -100)
+        totalscore()
 
 
 def printnames():
@@ -420,7 +463,7 @@ def serveswitch():
 
 
 while True:
-    window.update()
+
     if game_state == 0:
         while game_state == 0:
             gameformat()
@@ -452,7 +495,7 @@ while True:
                 servechange = 4
                 penalties = 20
                 game_state = 100
-                size = True
+                serve = [True, False]
                 buttonBcolor()
             elif z == "q":  # command to close window
                 window.bye()
@@ -567,26 +610,15 @@ while True:
         if player1 is True and player2 is True:
             game_state = 150
             sleep(1)
-    pen.color("white")
-    pen.goto(0, 0)
-    pen.write("Please choose serving player.", align="center", font=("Arial", 60, "bold"))
     sleep(1)
     start_game = default_timer()
     if game_state == 150:
-        while game_state == 150:
-            z = input(str(input))
-            if z == "q":  # command to close window
-                window.bye()
-            elif z == "a":
-                serve = True  # serving left player
-                servingturndisplay()
-                game_state = 200
-            elif z == "b":
-                serve = False  # serving right player
-                servingturndisplay()
-                game_state = 200
+        serve = choice(serve)
+        game_state = 200
     if game_state == 200:
+        servingturndisplay()
         while game_state == 200:
+            window.update()
             if leftScore >= penalties and rightScore >= penalties:
                 while leftScore >= penalties and rightScore >= penalties:  # handling overtime
                     serveswitch()
