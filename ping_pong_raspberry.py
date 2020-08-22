@@ -1,5 +1,6 @@
 # # #        TO DO LIST
-# 1. Prepare a working variant for raspberry + sleep time
+# 1. Change logic for resetting players in doubles
+# 2. Prepare a working variant for raspberry + sleep time
 # 2. Create 3 player logic
 # 3. Reduce the code - move functions in another file
 
@@ -7,10 +8,11 @@
 from time import sleep
 from turtle import Screen, Turtle
 from math import fabs, ceil
-import sqlite3
+from sqlite3 import connect
 from datetime import date
 from timeit import default_timer
 from random import choice
+
 exec(open('system/database.py').read())  # executing database creation file
 
 # variable for the game
@@ -58,7 +60,7 @@ window.title("Table tennis scoreboard")
 window.bgcolor("black")
 window.setup(width=1024, height=600)
 window.delay(0)
-window.tracer(0)
+window.tracer(False)
 
 # turtle set up
 pen = Turtle()
@@ -70,13 +72,28 @@ pen.penup()
 # definitions of game functions
 
 
-def database_update_():
+def database_update_singles():
     global player2_id, player1_id, playerNames, match_duration, leftScore, rightScore
-    conn = sqlite3.connect(DATABASE_NAME)
+    conn = connect(DATABASE_NAME)
     c = conn.cursor()
     c.execute(
-        'INSERT INTO Table_tennis_statistics (Player_1_Name, Player_2_Name, Player_1_Score, Player_2_Score, '
+        'INSERT INTO Singles_statistics (Player_1_Name, Player_2_Name, Player_1_Score, Player_2_Score, '
         'Match_duration, Date) VALUES (?, ?, ?, ?, ?, ?)', [playerNames[player1_id], playerNames[player2_id], leftScore,
+                                                            rightScore, match_duration, date.today()])
+    conn.commit()
+    conn.close()
+    return c.lastrowid
+
+
+def database_update_doubles():
+    global player1_id, player2_id, player3_id, player4_id, playerNames, match_duration, leftScore, rightScore
+    teamA = playerNames[player1_id] + "-" + playerNames[player2_id]
+    teamB = playerNames[player3_id] + "-" + playerNames[player4_id]
+    conn = connect(DATABASE_NAME)
+    c = conn.cursor()
+    c.execute(
+        'INSERT INTO Doubles_statistics (Team_1_Name, Team_2_Name, Team_1_Score, Team_2_Score, '
+        'Match_duration, Date) VALUES (?, ?, ?, ?, ?, ?)', [teamA, teamB, leftScore,
                                                             rightScore, match_duration, date.today()])
     conn.commit()
     conn.close()
@@ -92,21 +109,6 @@ def gameformat():
     pen.write("Нова игра", align="center", font=("Arial", 60, "bold"))
     pen.goto(250, -100)
     pen.write("Бутон В", align="center", font=("Arial", 40, "bold"))
-
-
-def database_update_doubles():
-    global player1_id, player2_id, player3_id, player4_id, playerNames, match_duration, leftScore, rightScore
-    teamA = playerNames[player1_id] + playerNames[player2_id]
-    teamB = playerNames[player3_id] + playerNames[player4_id]
-    conn = sqlite3.connect(DATABASE_NAME)
-    c = conn.cursor()
-    c.execute(
-        'INSERT INTO Table_tennis_statistics (Team_1_Name, Team_2_Name, Team_1_Score, Team_2_Score, '
-        'Match_duration, Date) VALUES (?, ?, ?, ?, ?, ?)', [teamA, teamB, leftScore,
-                                                            rightScore, match_duration, date.today()])
-    conn.commit()
-    conn.close()
-    return c.lastrowid
 
 
 def gametype():
@@ -136,7 +138,7 @@ def buttonAcolor():
     pen.goto(-220, -100)
     pen.write("Бутон А", align="center", font=("Arial", 40, "bold"))
     pen.color("white")
-    sleep(1)
+    sleep(0.5)
     pen.clear()
 
 
@@ -145,15 +147,15 @@ def buttonBcolor():
     pen.goto(250, -100)
     pen.write("Бутон В", align="center", font=("Arial", 40, "bold"))
     pen.color("white")
-    sleep(1)
+    sleep(0.5)
     pen.clear()
 
 
 def resetgame():
     window.bgcolor("black")
     pen.color("white")
-    global serve, totalLeft, totalRight, leftScore, rightScore, count, game_state, player1, player2, posCount, \
-        positionX, positionY, positionX2, positionY2, player1_id, player2_id, size
+    global serve, totalLeft, totalRight, leftScore, rightScore, count, game_state, player1, player2, player3, player4,\
+        posCount, positionX, positionY, positionX2, positionY2, player1_id, player2_id, player3_id, player4_id, size
     serve = [True, False]
     totalLeft = totalRight = leftScore = rightScore = count = 0
     pen.clear()
@@ -162,8 +164,12 @@ def resetgame():
     pen.goto(0, -100)
     player1 = False
     player2 = False
+    player3 = None
+    player4 = None
     player1_id = None
     player2_id = None
+    player3_id = None
+    player4_id = None
     size = None
     posCount = 0
     positionY = 100
@@ -184,49 +190,40 @@ def totalscore():
 def serveistrue():
     global leftScore, rightScore, totalLeft, totalRight
     pen.clear()
+    pen.color("green")
     if leftScore <= 9 and rightScore <= 9:
-        totalscore()
-        pen.color("green")
         pen.goto(-400, -100)
         pen.write(">", align="center", font=("Arial", 200, "bold"))
         pen.goto(0, -100)
         pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
     elif leftScore >= 10 and rightScore <= 9:
-        totalscore()
-        pen.color("green")
         pen.goto(-400, -100)
         pen.write(">", align="center", font=("Arial", 200, "bold"))
         pen.goto(0, -100)
         pen.write("{} : {}  ".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
     elif rightScore >= 10 and leftScore <= 9:
-        totalscore()
-        pen.color("green")
         pen.goto(-400, -100)
         pen.write(">", align="center", font=("Arial", 200, "bold"))
         pen.goto(0, -100)
         pen.write("  {} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
     elif rightScore >= 10 and leftScore >= 10:
-        totalscore()
-        pen.color("green")
         pen.goto(-400, -100)
         pen.write(">", align="center", font=("Arial", 200, "bold"))
         pen.goto(0, -100)
         pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+    totalscore()
 
 
 def serveisfalse():
     global leftScore, rightScore, totalLeft, totalRight
     pen.clear()
+    pen.color("green")
     if leftScore <= 9 and rightScore <= 9:
-        totalscore()
-        pen.color("green")
         pen.goto(400, -100)
         pen.write("<", align="center", font=("Arial", 200, "bold"))
         pen.goto(0, -100)
         pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
     elif leftScore >= 10 and rightScore <= 9:
-        totalscore()
-        pen.color("green")
         pen.goto(400, -100)
         pen.write("<", align="center", font=("Arial", 200, "bold"))
         pen.goto(0, -100)
@@ -239,12 +236,11 @@ def serveisfalse():
         pen.goto(0, -100)
         pen.write("  {} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
     elif rightScore >= 10 and leftScore >= 10:
-        totalscore()
-        pen.color("green")
         pen.goto(400, -100)
         pen.write("<", align="center", font=("Arial", 200, "bold"))
         pen.goto(0, -100)
         pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+    totalscore()
 
 
 def servicecheck():
@@ -255,7 +251,8 @@ def servicecheck():
 
 
 def rightwins():
-    global totalLeft, totalRight, rightScore, leftScore, count, start_game, match_duration, player1_id, player2_id
+    global totalLeft, totalRight, rightScore, leftScore, count, start_game, match_duration, player1_id, player2_id, \
+        player3_id, player4_id, serve
     totalRight += 1
     end_game = default_timer()
     match_duration_raw = end_game - start_game
@@ -263,7 +260,7 @@ def rightwins():
     if size is True:
         database_update_doubles()
     elif size is False:
-        database_update_()
+        database_update_singles()
     rightScore = leftScore = count = 0
     start_game = default_timer()
     pen.goto(0, -200)
@@ -272,23 +269,19 @@ def rightwins():
     sleep(5)
     pen.clear()
     if size is True:
-        player1_id, player2_id = player3_id, player4_id
+        player1_id, player2_id, player3_id, player4_id = player4_id, player3_id, player2_id, player1_id
     elif size is False:
         player1_id, player2_id = player2_id, player1_id
     totalLeft, totalRight = totalRight, totalLeft
-    pen.color("green")
-    pen.goto(400, -100)
-    pen.write("<", align="center", font=("Arial", 200, "bold"))
-    pen.goto(0, -100)
-    pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
     totalscore()
     pen.clear()
-    serveswitch()
+    serve = True
     servingturndisplay()
 
 
 def leftwins():
-    global totalLeft, totalRight, rightScore, leftScore, count, start_game, match_duration, player1_id, player2_id
+    global totalLeft, totalRight, rightScore, leftScore, count, start_game, match_duration, player1_id, player2_id, \
+        player3_id, player4_id, serve
     totalLeft += 1
     end_game = default_timer()
     match_duration_raw = end_game - start_game
@@ -296,7 +289,7 @@ def leftwins():
     if size is True:
         database_update_doubles()
     elif size is False:
-        database_update_()
+        database_update_singles()
     leftScore = rightScore = count = 0
     start_game = default_timer()
     pen.goto(0, -200)
@@ -305,18 +298,13 @@ def leftwins():
     sleep(5)
     pen.clear()
     if size is True:
-        player1_id, player2_id = player3_id, player4_id
+        player1_id, player2_id, player3_id, player4_id = player4_id, player3_id, player2_id, player1_id
     elif size is False:
         player1_id, player2_id = player2_id, player1_id
     totalLeft, totalRight = totalRight, totalLeft
-    pen.color("green")
-    pen.goto(-400, -100)
-    pen.write(">", align="center", font=("Arial", 200, "bold"))
-    pen.goto(0, -100)
-    pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
     totalscore()
     pen.clear()
-    serveswitch()
+    serve = False
     servingturndisplay()
 
 
@@ -340,7 +328,6 @@ def servingturndisplay():
         pen.goto(0, -100)
         pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
         totalscore()
-
     elif not serve:
         pen.clear()
         pen.color("green")
@@ -408,18 +395,49 @@ def position():
         positionY2 = 100
 
 
+def doubles_reset_player():
+    global player1, player2, player3, player4, player1_id, player2_id, player3_id, player4_id
+    pen.goto(0, 200)
+    pen.write("Играчите са едни и същи", align="center", font=("Arial", 40, "bold"))
+    printnames()
+    player1 = False
+    player2 = False
+    player3 = False
+    player4 = False
+    player1_id = None
+    player2_id = None
+    player3_id = None
+    player4_id = None
+    sleep(0.5)
+    pen.clear()
+
+
 def playercheck():
-    global player1, player2, player1_id, player2_id
-    if player1_id == player2_id:
-        pen.goto(0, 200)
-        pen.write("Играчите са едни и същи", align="center", font=("Arial", 40, "bold"))
-        printnames()
-        player1 = False
-        player2 = False
-        player1_id = None
-        player2_id = None
-        sleep(1)
-        pen.clear()
+    global player1, player2, player3, player4, player1_id, player2_id, player3_id, player4_id
+    if size is True:
+        if player1_id == player2_id and player1 is True and player2 is True:
+            doubles_reset_player()
+        elif player1_id == player3_id and player1 is True and player3 is True:
+            doubles_reset_player()
+        elif player1_id == player4_id and player1 is True and player4 is True:
+            doubles_reset_player()
+        elif player2_id == player3_id and player2 is True and player3 is True:
+            doubles_reset_player()
+        elif player2_id == player4_id and player2 is True and player4 is True:
+            doubles_reset_player()
+        elif player3_id == player4_id and player3 is True and player4 is True:
+            doubles_reset_player()
+    elif size is False:
+        if player1_id == player2_id:
+            pen.goto(0, 200)
+            pen.write("Играчите са едни и същи", align="center", font=("Arial", 40, "bold"))
+            printnames()
+            player1 = False
+            player2 = False
+            player1_id = None
+            player2_id = None
+            sleep(0.5)
+            pen.clear()
 
 
 def setplayer(e):
@@ -507,6 +525,8 @@ while True:
                 servechange = 4
                 penalties = 20
                 game_state = 150
+                player3 = False
+                player4 = False
                 buttonBcolor()
             elif z == "q":  # command to close window
                 window.bye()
@@ -531,7 +551,7 @@ while True:
             elif z == "q":  # command to close window
                 window.bye()
     if game_state == 150:
-        while player1 is not True or player2 is not True:
+        while player1 is not True:
             printnames()
             x = input(str(input))
             if x == "a" and player1 is False:
@@ -543,40 +563,43 @@ while True:
                 if positionY == 0:
                     player1 = setplayer(player1)
                     player1_id = playerNames.index("Веско")
-                    sleep(1)
+                    sleep(0.5)
                     pen.clear()
                     playercheck()
                 elif positionY == -100:
                     player1 = setplayer(player1)
                     player1_id = playerNames.index("Сашо")
-                    sleep(1)
+                    sleep(0.5)
                     pen.clear()
                     playercheck()
                 elif positionY == -200 and posCount <= 3:
                     player1 = setplayer(player1)
                     player1_id = playerNames.index("Гери")
-                    sleep(1)
+                    sleep(0.5)
                     pen.clear()
                     playercheck()
                 elif positionY2 == 0 and posCount > 0:
                     player1 = setplayer(player1)
                     player1_id = playerNames.index("Георги")
-                    sleep(1)
+                    sleep(0.5)
                     pen.clear()
                     playercheck()
                 elif positionY2 == -100 and posCount > 0:
                     player1 = setplayer(player1)
                     player1_id = playerNames.index("Ивайло")
-                    sleep(1)
+                    sleep(0.5)
                     pen.clear()
                     playercheck()
                 else:
                     player1 = setplayer(player1)
                     player1_id = playerNames.index("Друг")
-                    sleep(1)
+                    sleep(0.5)
                     pen.clear()
                     playercheck()
-            elif x == "a" and player2 is False:
+        while player2 is not True:
+            printnames()
+            x = input(str(input))
+            if x == "a" and player2 is False:
                 posCount += 1
                 pen.clear()
                 printnames()
@@ -585,43 +608,134 @@ while True:
                 if positionY == 0:
                     player2 = setplayer(player2)
                     player2_id = playerNames.index("Веско")
-                    sleep(1)
+                    sleep(0.5)
                     pen.clear()
                     playercheck()
                 elif positionY == -100:
                     player2 = setplayer(player2)
                     player2_id = playerNames.index("Сашо")
-                    sleep(1)
+                    sleep(0.5)
                     pen.clear()
                     playercheck()
                 elif positionY == -200 and posCount <= 3:
                     player2 = setplayer(player2)
                     player2_id = playerNames.index("Гери")
-                    sleep(1)
+                    sleep(0.5)
                     pen.clear()
                     playercheck()
                 elif positionY2 == 0 and posCount > 0:
                     player2 = setplayer(player2)
                     player2_id = playerNames.index("Георги")
-                    sleep(1)
+                    sleep(0.5)
                     pen.clear()
                     playercheck()
                 elif positionY2 == -100 and posCount > 0:
                     player2 = setplayer(player2)
                     player2_id = playerNames.index("Ивайло")
-                    sleep(1)
+                    sleep(0.5)
                     pen.clear()
                     playercheck()
                 else:
                     player2 = setplayer(player2)
                     player2_id = playerNames.index("Друг")
-                    sleep(1)
+                    sleep(0.5)
                     pen.clear()
                     playercheck()
-        if player1 is True and player2 is True:
+        while player3 is False:
+            printnames()
+            x = input(str(input))
+            if x == "a" and player3 is False:
+                posCount += 1
+                pen.clear()
+                printnames()
+                position()
+            elif x == "b" and player3 is False:
+                if positionY == 0:
+                    player3 = setplayer(player3)
+                    player3_id = playerNames.index("Веско")
+                    sleep(0.5)
+                    pen.clear()
+                    playercheck()
+                elif positionY == -100:
+                    player3 = setplayer(player3)
+                    player3_id = playerNames.index("Сашо")
+                    sleep(0.5)
+                    pen.clear()
+                    playercheck()
+                elif positionY == -200 and posCount <= 3:
+                    player3 = setplayer(player3)
+                    player3_id = playerNames.index("Гери")
+                    sleep(0.5)
+                    pen.clear()
+                    playercheck()
+                elif positionY2 == 0 and posCount > 0:
+                    player3 = setplayer(player3)
+                    player3_id = playerNames.index("Георги")
+                    sleep(0.5)
+                    pen.clear()
+                    playercheck()
+                elif positionY2 == -100 and posCount > 0:
+                    player3 = setplayer(player3)
+                    player3_id = playerNames.index("Ивайло")
+                    sleep(0.5)
+                    pen.clear()
+                    playercheck()
+                else:
+                    player3 = setplayer(player3)
+                    player3_id = playerNames.index("Друг")
+                    sleep(0.5)
+                    pen.clear()
+                    playercheck()
+        while player4 is False:
+            printnames()
+            x = input(str(input))
+            if x == "a" and player4 is False:
+                posCount += 1
+                pen.clear()
+                printnames()
+                position()
+            elif x == "b" and player4 is False:
+                if positionY == 0:
+                    player4 = setplayer(player4)
+                    player4_id = playerNames.index("Веско")
+                    sleep(0.5)
+                    pen.clear()
+                    playercheck()
+                elif positionY == -100:
+                    player4 = setplayer(player4)
+                    player4_id = playerNames.index("Сашо")
+                    sleep(0.5)
+                    pen.clear()
+                    playercheck()
+                elif positionY == -200 and posCount <= 3:
+                    player4 = setplayer(player4)
+                    player4_id = playerNames.index("Гери")
+                    sleep(0.5)
+                    pen.clear()
+                    playercheck()
+                elif positionY2 == 0 and posCount > 0:
+                    player4 = setplayer(player4)
+                    player4_id = playerNames.index("Георги")
+                    sleep(0.5)
+                    pen.clear()
+                    playercheck()
+                elif positionY2 == -100 and posCount > 0:
+                    player4 = setplayer(player4)
+                    player4_id = playerNames.index("Ивайло")
+                    sleep(0.5)
+                    pen.clear()
+                    playercheck()
+                else:
+                    player4 = setplayer(player4)
+                    player4_id = playerNames.index("Друг")
+                    sleep(0.5)
+                    pen.clear()
+                    playercheck()
+        if player1 is True and player2 is True and player3 is True and player4 is True:
             game_state = 200
-            sleep(1)
-    sleep(1)
+        elif player1 is True and player2 is True:
+            game_state = 200
+    sleep(0.5)
     start_game = default_timer()
     if game_state == 200:
         serve = choice(serve)
@@ -629,7 +743,6 @@ while True:
     if game_state == 250:
         servingturndisplay()
         while game_state == 250:
-            window.update()
             if leftScore >= penalties and rightScore >= penalties:
                 while leftScore >= penalties and rightScore >= penalties:  # handling overtime
                     serveswitch()
@@ -671,7 +784,7 @@ while True:
                 count += 1
                 if x == "r":  # reset result
                     resetgame()
-                    sleep(1)
+                    sleep(0.5)
                 elif x == "a":  # point for left player
                     leftScore += 1
                     if serve is True:
@@ -693,4 +806,5 @@ while True:
                     break
                 else:
                     wronginput()  # handling wrong keyboard input
+window.mainloop()
 window.bye()
