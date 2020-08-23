@@ -37,7 +37,7 @@ def main():
     full = os.path.join(path2, "system/stats.db")
     database = full
 
-    sql_create_statistics_table = """ CREATE TABLE IF NOT EXISTS Table_tennis_statistics (
+    sql_create_statistics_table = """ CREATE TABLE IF NOT EXISTS Singles_statistics (
                                         Match_id integer PRIMARY KEY,
                                         Player_1_Name text,
                                         Player_2_Name text,
@@ -46,6 +46,17 @@ def main():
                                         Match_duration text,
                                         Date text
                                     ); """
+    sql_create_statistics_doubles_table = """ CREATE TABLE IF NOT EXISTS Doubles_statistics (
+                                        Match_id integer PRIMARY KEY,
+                                        Team_1_Name text,
+                                        Team_2_Name text,
+                                        Team_1_Score integer,
+                                        Team_2_Score integer,
+                                        Match_duration text,
+                                        Date text
+                                    ); """
+
+
 
     # create a database connection
     conn = create_connection(database)
@@ -54,6 +65,8 @@ def main():
     if conn is not None:
         # create projects table
         create_table(conn, sql_create_statistics_table)
+        create_table(conn, sql_create_statistics_doubles_table)
+
 
 
     else:
