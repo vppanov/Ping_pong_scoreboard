@@ -11,6 +11,16 @@ from sqlite3 import connect
 from datetime import date
 from timeit import default_timer
 from random import choice
+from gpiozero import Button
+
+# buttons
+
+buttonA = Button(16)
+buttonB = Button(26)
+buttonC = Button(10)  # TBD
+buttonD = Button(11)  # TBD
+
+# database creation
 
 exec(open('system/database.py').read())  # executing database creation file
 
@@ -508,14 +518,18 @@ def setplayer(e):
         return e
 
 
+def slowraspberry():
+    sleep(0.3)
+
+
 # game logic
 
 
 while True:
     while game_state == 0:
+        slowraspberry()
         gameformat()
-        v = input(str(input))
-        if v == "a":
+        if buttonA.is_active:
             gamepoints = 21
             servechange = 4
             penalties = 20
@@ -524,19 +538,21 @@ while True:
             buttonAcolor()
             doubles = False
             game_state = 200
-        elif v == "b":
+        elif buttonB.is_active:
             buttonBcolor()
             game_state = 50
-    while game_state == 50:
-        gametype()
-        z = input(str(input))
-        if z == "r":  # command to close window
+        elif buttonA.is_active and buttonB.is_active:
             resetgame()
-        elif z == "a":  # singles
+        elif buttonC.is_active:  # command to close window
+            window.bye()
+    while game_state == 50:
+        slowraspberry()
+        gametype()
+        if buttonA.is_active:  # singles
             game_state = 100
             doubles = False
             buttonAcolor()
-        elif z == "b":  # doubles
+        elif buttonB.is_active:  # doubles
             doubles = True
             gamepoints = 21
             servechange = 4
@@ -545,37 +561,39 @@ while True:
             player3 = False
             player4 = False
             buttonBcolor()
-        elif z == "q":  # command to close window
+        elif buttonA.is_active and buttonB.is_active:
+            resetgame()
+        elif buttonC.is_active:  # command to close window
             window.bye()
     while game_state == 100:
+        slowraspberry()
         gamesize()
-        z = input(str(input))
-        if z == "r":  # command to close window
-            resetgame()
-        elif z == "a":
+        if buttonA.is_active:
             gamepoints = 21
             servechange = 4
             penalties = 20
             game_state = 150
             buttonAcolor()
-        elif z == "b":
+        elif buttonB.is_active:
             gamepoints = 11
             servechange = 1
             penalties = 10
             game_state = 150
             buttonBcolor()
-        elif z == "q":  # command to close window
+        elif buttonA.is_active and buttonB.is_active:
+            resetgame()
+        elif buttonC.is_active:  # command to close window
             window.bye()
     while game_state == 150:
         while player1 is not True:
             printnames()
-            x = input(str(input))
-            if x == "a" and player1 is False:
+            slowraspberry()
+            if buttonA.is_active and player1 is False:
                 posCount += 1
                 pen.clear()
                 printnames()
                 position()
-            elif x == "b" and player1 is False:
+            elif buttonB.is_active and player1 is False:
                 if positionY == 0:
                     player1 = setplayer(player1)
                     player1_id = playerNames.index("Веско")
@@ -614,13 +632,13 @@ while True:
                     playercheck()
         while player2 is not True and player1 is True:
             printnames()
-            x = input(str(input))
-            if x == "a" and player2 is False:
+            slowraspberry()
+            if buttonA.is_active and player2 is False:
                 posCount += 1
                 pen.clear()
                 printnames()
                 position()
-            elif x == "b" and player2 is False:
+            elif buttonB.is_active and player2 is False:
                 if positionY == 0:
                     player2 = setplayer(player2)
                     player2_id = playerNames.index("Веско")
@@ -659,13 +677,13 @@ while True:
                     playercheck()
         while player3 is False and player2 is True:
             printnames()
-            x = input(str(input))
-            if x == "a" and player3 is False:
+            slowraspberry()
+            if buttonA.is_active and player3 is False:
                 posCount += 1
                 pen.clear()
                 printnames()
                 position()
-            elif x == "b" and player3 is False:
+            elif buttonB.is_active and player3 is False:
                 if positionY == 0:
                     player3 = setplayer(player3)
                     player3_id = playerNames.index("Веско")
@@ -704,13 +722,13 @@ while True:
                     playercheck()
         while player4 is False and player3 is True:
             printnames()
-            x = input(str(input))
-            if x == "a" and player4 is False:
+            slowraspberry()
+            if buttonA.is_active and player4 is False:
                 posCount += 1
                 pen.clear()
                 printnames()
                 position()
-            elif x == "b" and player4 is False:
+            elif buttonB.is_active and player4 is False:
                 if positionY == 0:
                     player4 = setplayer(player4)
                     player4_id = playerNames.index("Веско")
@@ -759,10 +777,8 @@ while True:
         if leftScore >= penalties and rightScore >= penalties:
             while leftScore >= penalties and rightScore >= penalties:  # handling overtime
                 serveswitch()
-                x = input(str(input))
-                if x == "r":  # reset result
-                    resetgame()
-                elif x == "a":  # point for left player
+                slowraspberry()
+                if buttonA.is_active:  # point for left player
                     leftScore += 1
                     if serve is True:
                         serveistrue()
@@ -774,7 +790,7 @@ while True:
                         if fabs(leftScore - rightScore) == 2:
                             leftwins()
                             serve = True  # assigning serve turn for next game
-                elif x == "b":  # point for right  player
+                elif buttonB.is_active:  # point for right  player
                     rightScore += 1
                     if serve is True:
                         serveistrue()
@@ -786,19 +802,20 @@ while True:
                         if fabs(leftScore - rightScore) == 2:  # checking for two points difference
                             rightwins()
                             serve = False
+                elif buttonA.is_active and buttonB.is_active:
+                    resetgame()
+                elif buttonC.is_active:  # command to close window
+                    window.bye()
                 else:
-                    wronginput()  # handling wrong keyboard input
+                    wronginput()  # handling wrong input
         elif leftScore == gamepoints:  # left wins
             leftwins()
         elif rightScore == gamepoints:  # right wins
             rightwins()
         else:
-            x = input(str(input))
+            slowraspberry()
             count += 1
-            if x == "r":  # reset result
-                resetgame()
-                sleep(0.5)
-            elif x == "a":  # point for left player
+            if buttonA.is_active:  # point for left player
                 leftScore += 1
                 if serve is True:
                     serveistrue()
@@ -806,7 +823,7 @@ while True:
                 elif serve is False:
                     serveisfalse()
                     servicecheck()
-            elif x == "b":  # point for right  player
+            elif buttonB.is_active:  # point for right  player
                 rightScore += 1
                 if serve is True:
                     serveistrue()
@@ -814,10 +831,11 @@ while True:
                 elif serve is False:
                     serveisfalse()
                     servicecheck()
-            elif x == "q":  # close program
+            elif buttonA.is_active and buttonB.is_active:
+                resetgame()
+            elif buttonC.is_active:  # command to close window
                 window.bye()
-                break
             else:
-                wronginput()  # handling wrong keyboard input
+                wronginput()  # handling wrong input
 window.mainloop()
 window.bye()
