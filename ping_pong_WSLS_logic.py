@@ -1,6 +1,7 @@
 # # #        TO DO LIST
-# 1. Prepare a working variant for raspberry + sleep time
-# 2. Prepare a translation to English
+# 1. Change logic for resetting players in doubles
+# 2. Prepare a working variant for raspberry + sleep time
+# 2. Create 3 player logic
 # 3. Reduce the code - move functions in another file
 
 
@@ -21,6 +22,7 @@ rightScore = 0
 serve = [True, False]
 totalLeft = 0
 totalRight = 0
+totalThird = 0
 player1 = False
 player2 = False
 player3 = None
@@ -30,6 +32,9 @@ player1_id = None
 player2_id = None
 player3_id = None
 player4_id = None
+left = None
+right = None
+win = None
 posCount = 0
 positionY = 100
 positionX = -350
@@ -42,6 +47,7 @@ servechange = 0
 penalties = 0
 start_game = None
 doubles = None
+wsls = None
 DATABASE_NAME = 'system/stats.db'
 
 
@@ -99,14 +105,31 @@ def database_update_doubles():
     return c.lastrowid
 
 
+def database_update_wsls():
+    global left, right, playerNames, match_duration, leftScore, rightScore
+    conn = connect(DATABASE_NAME)
+    c = conn.cursor()
+    c.execute(
+        'INSERT INTO Singles_statistics (Player_1_Name, Player_2_Name, Player_1_Score, Player_2_Score, '
+        'Match_duration, Date) VALUES (?, ?, ?, ?, ?, ?)', [playerNames[left], playerNames[right], leftScore,
+                                                            rightScore, match_duration, date.today()])
+    conn.commit()
+    conn.close()
+    return c.lastrowid
+
+
 def gameformat():
-    pen.goto(-220, 0)
+    pen.goto(-220, -50)
     pen.write("Бърза игра", align="center", font=("Arial", 60, "bold"))
-    pen.goto(-220, -100)
+    pen.goto(-220, -150)
     pen.write("Бутон А", align="center", font=("Arial", 40, "bold"))
-    pen.goto(250, 0)
+    pen.goto(0, 200)
+    pen.write("Специална игра", align="center", font=("Arial", 60, "bold"))
+    pen.goto(0, 100)
+    pen.write("Бутон С", align="center", font=("Arial", 40, "bold"))
+    pen.goto(250, -50)
     pen.write("Нова игра", align="center", font=("Arial", 60, "bold"))
-    pen.goto(250, -100)
+    pen.goto(250, -150)
     pen.write("Бутон В", align="center", font=("Arial", 40, "bold"))
 
 
@@ -134,7 +157,7 @@ def gamesize():
 
 def buttonAcolor():
     pen.color("red")
-    pen.goto(-220, -100)
+    pen.goto(-220, -150)
     pen.write("Бутон А", align="center", font=("Arial", 40, "bold"))
     pen.color("white")
     sleep(0.5)
@@ -143,8 +166,17 @@ def buttonAcolor():
 
 def buttonBcolor():
     pen.color("red")
-    pen.goto(250, -100)
+    pen.goto(250, -150)
     pen.write("Бутон В", align="center", font=("Arial", 40, "bold"))
+    pen.color("white")
+    sleep(0.5)
+    pen.clear()
+
+
+def buttonCcolor():
+    pen.color("red")
+    pen.goto(0, 100)
+    pen.write("Бутон C", align="center", font=("Arial", 40, "bold"))
     pen.color("white")
     sleep(0.5)
     pen.clear()
@@ -154,9 +186,10 @@ def resetgame():
     window.bgcolor("black")
     pen.color("white")
     global serve, totalLeft, totalRight, leftScore, rightScore, count, game_state, player1, player2, player3, player4,\
-        posCount, positionX, positionY, positionX2, positionY2, player1_id, player2_id, player3_id, player4_id, doubles
+        posCount, positionX, positionY, positionX2, positionY2, player1_id, player2_id, player3_id, player4_id, \
+        doubles, wsls, totalThird
     serve = [True, False]
-    totalLeft = totalRight = leftScore = rightScore = count = 0
+    totalLeft = totalRight = leftScore = rightScore = totalThird = count = 0
     pen.clear()
     pen.goto(0, 200)
     pen.write("Нова игра!", align="center", font=("Arial", 60, "bold"))
@@ -170,6 +203,7 @@ def resetgame():
     player3_id = None
     player4_id = None
     doubles = None
+    wsls = None
     posCount = 0
     positionY = 100
     positionX = -350
@@ -179,11 +213,17 @@ def resetgame():
 
 
 def totalscore():
-    pen.goto(0, 220)
-    pen.color("white")
-    pen.write("Общ резултат {} : {}".format(totalLeft, totalRight), align="center",
-              font=("Arial", 60, "bold"))
-    pen.goto(0, -100)
+    if wsls is True:
+        pen.goto(0, 220)
+        pen.color("white")
+        pen.write("Веско : {} - Сашо : {} - Гери : {}".format(totalLeft, totalRight, totalThird), align="center",
+                  font=("Arial", 55, "bold"))
+    else:
+        pen.goto(0, 220)
+        pen.color("white")
+        pen.write("Общ резултат {} : {}".format(totalLeft, totalRight), align="center",
+                  font=("Arial", 60, "bold"))
+        pen.goto(0, -100)
 
 
 def serveistrue():
@@ -249,6 +289,218 @@ def servicecheck():
         count = -1  # resetting the counter to negative number to handle service turn
 
 
+def rightwins():
+    global totalLeft, totalRight, rightScore, leftScore, count, start_game, match_duration, player1_id, player2_id, \
+        player3_id, player4_id, serve, win, left, right, totalThird
+    if wsls is True:
+        end_game = default_timer()
+        match_duration_raw = end_game - start_game
+        match_duration = ceil(match_duration_raw / 60)
+        database_update_wsls()
+        win = right
+        if left == 0 and right == 1:
+            if win == left:
+                totalLeft += 1
+                right = player1_id
+                left = player3_id
+            elif win == right:
+                totalRight += 1
+                left = player2_id
+                right = player3_id
+        elif left == 0 and right == 2:
+            if win == left:
+                totalLeft += 1
+                right = player1_id
+                left = player2_id
+            elif win == right:
+                totalThird += 1
+                left = player3_id
+                right = player2_id
+        elif left == 1 and right == 0:
+            if win == left:
+                totalRight += 1
+                right = player2_id
+                left = player3_id
+            elif win == right:
+                totalLeft += 1
+                left = player1_id
+                right = player3_id
+        elif left == 1 and right == 2:
+            if win == left:
+                totalRight += 1
+                right = player2_id
+                left = player1_id
+            elif win == right:
+                totalThird += 1
+                left = player3_id
+                right = player1_id
+        elif left == 2 and right == 0:
+            if win == left:
+                totalThird += 1
+                right = player3_id
+                left = player2_id
+            elif win == right:
+                totalLeft += 1
+                left = player1_id
+                right = player2_id
+        elif left == 2 and right == 1:
+            if win == left:
+                totalThird += 1
+                right = player3_id
+                left = player1_id
+            elif win == right:
+                totalRight += 1
+                left = player2_id
+                right = player1_id
+        rightScore = leftScore = count = 0
+        start_game = default_timer()
+        pen.goto(0, -200)
+        pen.write('ПОБЕДА !', align="center", font=("Arial", 100, "bold"))
+        pen.goto(0, -100)
+        sleep(5)
+        pen.clear()
+        totalscore()
+        pen.clear()
+        serve = True
+        servingturndisplay()
+    else:
+        totalRight += 1
+        end_game = default_timer()
+        match_duration_raw = end_game - start_game
+        match_duration = ceil(match_duration_raw / 60)
+        if doubles is True:
+            database_update_doubles()
+        elif doubles is False:
+            database_update_singles()
+        rightScore = leftScore = count = 0
+        start_game = default_timer()
+        pen.goto(0, -200)
+        pen.write('ПОБЕДА !', align="center", font=("Arial", 100, "bold"))
+        pen.goto(0, -100)
+        sleep(5)
+        pen.clear()
+        if doubles is True:
+            player1_id, player2_id, player3_id, player4_id = player4_id, player3_id, player2_id, player1_id
+        elif doubles is False:
+            player1_id, player2_id = player2_id, player1_id
+        totalLeft, totalRight = totalRight, totalLeft
+        totalscore()
+        pen.clear()
+        serve = True
+        servingturndisplay()
+
+
+def leftwins():
+    global totalLeft, totalRight, rightScore, leftScore, count, start_game, match_duration, player1_id, player2_id, \
+        player3_id, player4_id, serve, win, left, right, totalThird
+    if wsls is True:
+        end_game = default_timer()
+        match_duration_raw = end_game - start_game
+        match_duration = ceil(match_duration_raw / 60)
+        database_update_wsls()
+        win = left
+        if left == 0 and right == 1:
+            if win == left:
+                totalLeft += 1
+                right = player1_id
+                left = player3_id
+            elif win == right:
+                totalRight += 1
+                left = player2_id
+                right = player3_id
+        elif left == 0 and right == 2:
+            if win == left:
+                totalLeft += 1
+                right = player1_id
+                left = player2_id
+            elif win == right:
+                totalThird += 1
+                left = player3_id
+                right = player2_id
+        elif left == 1 and right == 0:
+            if win == left:
+                totalRight += 1
+                right = player2_id
+                left = player3_id
+            elif win == right:
+                totalLeft += 1
+                left = player1_id
+                right = player3_id
+        elif left == 1 and right == 2:
+            if win == left:
+                totalRight += 1
+                right = player2_id
+                left = player1_id
+            elif win == right:
+                totalThird += 1
+                left = player3_id
+                right = player1_id
+        elif left == 2 and right == 0:
+            if win == left:
+                totalThird += 1
+                right = player3_id
+                left = player2_id
+            elif win == right:
+                totalLeft += 1
+                left = player1_id
+                right = player2_id
+        elif left == 2 and right == 1:
+            if win == left:
+                totalThird += 1
+                right = player3_id
+                left = player1_id
+            elif win == right:
+                totalRight += 1
+                left = player2_id
+                right = player1_id
+        rightScore = leftScore = count = 0
+        start_game = default_timer()
+        pen.goto(0, -200)
+        pen.write('ПОБЕДА !', align="center", font=("Arial", 100, "bold"))
+        pen.goto(0, -100)
+        sleep(5)
+        pen.clear()
+        totalscore()
+        pen.clear()
+        serve = False
+        servingturndisplay()
+    else:
+        totalLeft += 1
+        end_game = default_timer()
+        match_duration_raw = end_game - start_game
+        match_duration = ceil(match_duration_raw / 60)
+        if doubles is True:
+            database_update_doubles()
+        elif doubles is False:
+            database_update_singles()
+        leftScore = rightScore = count = 0
+        start_game = default_timer()
+        pen.goto(0, -200)
+        pen.write('ПОБЕДА !', align="center", font=("Arial", 100, "bold"))
+        pen.goto(0, -100)
+        sleep(5)
+        pen.clear()
+        if doubles is True:
+            player1_id, player2_id, player3_id, player4_id = player4_id, player3_id, player2_id, player1_id
+        elif doubles is False:
+            player1_id, player2_id = player2_id, player1_id
+        totalLeft, totalRight = totalRight, totalLeft
+        totalscore()
+        pen.clear()
+        serve = False
+        servingturndisplay()
+
+
+def wronginput():
+    global count
+    count -= 1
+    pen.color("red")
+    pen.goto(0, 150)
+    pen.write("Грешен бутон", align="center", font=("Arial", 60, "bold"))
+    pen.goto(0, -100)
+    pen.color("green")
+
+
 def servingturndisplay():
     global serve, leftScore, rightScore, totalLeft, totalLeft
     if serve:
@@ -267,82 +519,6 @@ def servingturndisplay():
         pen.goto(0, -100)
         pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
         totalscore()
-
-
-def serveswitch():
-    global serve
-    if serve is True:
-        serve = not serve  # switching serving player to right player
-    elif serve is False:
-        serve = not serve  # switching serving player to left player
-
-
-def rightwins():
-    global totalLeft, totalRight, rightScore, leftScore, count, start_game, match_duration, player1_id, player2_id, \
-        player3_id, player4_id, serve
-    totalRight += 1
-    end_game = default_timer()
-    match_duration_raw = end_game - start_game
-    match_duration = ceil(match_duration_raw / 60)
-    if doubles is True:
-        database_update_doubles()
-    elif doubles is False:
-        database_update_singles()
-    rightScore = leftScore = count = 0
-    start_game = default_timer()
-    pen.goto(0, -200)
-    pen.write('ПОБЕДА !', align="center", font=("Arial", 100, "bold"))
-    pen.goto(0, -100)
-    sleep(5)
-    pen.clear()
-    if doubles is True:
-        player1_id, player2_id, player3_id, player4_id = player4_id, player3_id, player2_id, player1_id
-    elif doubles is False:
-        player1_id, player2_id = player2_id, player1_id
-    totalLeft, totalRight = totalRight, totalLeft
-    totalscore()
-    pen.clear()
-    serve = True
-    servingturndisplay()
-
-
-def leftwins():
-    global totalLeft, totalRight, rightScore, leftScore, count, start_game, match_duration, player1_id, player2_id, \
-        player3_id, player4_id, serve
-    totalLeft += 1
-    end_game = default_timer()
-    match_duration_raw = end_game - start_game
-    match_duration = ceil(match_duration_raw / 60)
-    if doubles is True:
-        database_update_doubles()
-    elif doubles is False:
-        database_update_singles()
-    leftScore = rightScore = count = 0
-    start_game = default_timer()
-    pen.goto(0, -200)
-    pen.write('ПОБЕДА !', align="center", font=("Arial", 100, "bold"))
-    pen.goto(0, -100)
-    sleep(5)
-    pen.clear()
-    if doubles is True:
-        player1_id, player2_id, player3_id, player4_id = player4_id, player3_id, player2_id, player1_id
-    elif doubles is False:
-        player1_id, player2_id = player2_id, player1_id
-    totalLeft, totalRight = totalRight, totalLeft
-    totalscore()
-    pen.clear()
-    serve = False
-    servingturndisplay()
-
-
-def wronginput():
-    global count
-    count -= 1
-    pen.color("red")
-    pen.goto(0, 150)
-    pen.write("Грешен бутон", align="center", font=("Arial", 60, "bold"))
-    pen.goto(0, -100)
-    pen.color("green")
 
 
 def printnames():
@@ -508,6 +684,13 @@ def setplayer(e):
         return e
 
 
+def serveswitch():
+    global serve
+    if serve is True:
+        serve = not serve  # switching serving player to right player
+    elif serve is False:
+        serve = not serve  # switching serving player to left player
+
 # game logic
 
 
@@ -527,6 +710,18 @@ while True:
         elif v == "b":
             buttonBcolor()
             game_state = 50
+        elif v == "c":
+            wsls = True
+            gamepoints = 21
+            servechange = 4
+            penalties = 20
+            player1_id = 0
+            player2_id = 1
+            left = player1_id
+            right = player2_id
+            buttonCcolor()
+            doubles = False
+            game_state = 200
     while game_state == 50:
         gametype()
         z = input(str(input))
