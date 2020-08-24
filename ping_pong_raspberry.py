@@ -1,10 +1,3 @@
-# # #        TO DO LIST
-
-# 2. Prepare a translation to English
-# 3. Prepare a README for github
-# 3. Reduce the code - move functions in another file
-
-
 from time import sleep
 from turtle import Screen, Turtle
 from math import fabs, ceil

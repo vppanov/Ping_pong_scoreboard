@@ -1,10 +1,3 @@
-# # #        TO DO LIST
-# 1. Change logic for resetting players in doubles
-# 2. Prepare a working variant for raspberry + sleep time
-# 2. Create 3 player logic
-# 3. Reduce the code - move functions in another file
-
-
 from time import sleep
 from turtle import Screen, Turtle
 from math import fabs, ceil
