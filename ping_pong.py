@@ -1,7 +1,7 @@
 # # #        TO DO LIST
-# 1. Prepare a working variant for raspberry + sleep time
+
 # 2. Prepare a translation to English
-# 3. Prepare a README for gitghub
+# 3. Prepare a README for github
 # 4. Reduce the code - move functions in another file
 
 

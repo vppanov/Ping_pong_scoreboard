@@ -1,6 +1,7 @@
 # # #        TO DO LIST
-# 1. Prepare a working variant for raspberry + sleep time
+
 # 2. Prepare a translation to English
+# 3. Prepare a README for github
 # 3. Reduce the code - move functions in another file
 
 
@@ -54,7 +55,6 @@ start_game = None
 doubles = None
 DATABASE_NAME = 'system/stats.db'
 
-
 # # # Game states ####
 # 0 - choose game play
 # 50 - choose game type
@@ -77,6 +77,7 @@ pen.speed(0)
 pen.color("white")
 pen.hideturtle()
 pen.penup()
+
 
 # definitions of game functions
 
@@ -111,41 +112,41 @@ def database_update_doubles():
 
 def gameformat():
     pen.goto(-220, 0)
-    pen.write("Бърза игра", align="center", font=("Arial", 60, "bold"))
+    pen.write("Бърза игра", align="center", font=("Arial", 40, "bold"))
     pen.goto(-220, -100)
-    pen.write("Бутон А", align="center", font=("Arial", 40, "bold"))
+    pen.write("Бутон А", align="center", font=("Arial", 25, "bold"))
     pen.goto(250, 0)
-    pen.write("Нова игра", align="center", font=("Arial", 60, "bold"))
+    pen.write("Нова игра", align="center", font=("Arial", 40, "bold"))
     pen.goto(250, -100)
-    pen.write("Бутон В", align="center", font=("Arial", 40, "bold"))
+    pen.write("Бутон В", align="center", font=("Arial", 25, "bold"))
 
 
 def gametype():
     pen.goto(-220, 0)
-    pen.write("Единици", align="center", font=("Arial", 60, "bold"))
+    pen.write("Единици", align="center", font=("Arial", 40, "bold"))
     pen.goto(-220, -100)
-    pen.write("Бутон А", align="center", font=("Arial", 40, "bold"))
+    pen.write("Бутон А", align="center", font=("Arial", 25, "bold"))
     pen.goto(250, 0)
-    pen.write("Двойки", align="center", font=("Arial", 60, "bold"))
+    pen.write("Двойки", align="center", font=("Arial", 40, "bold"))
     pen.goto(250, -100)
-    pen.write("Бутон В", align="center", font=("Arial", 40, "bold"))
+    pen.write("Бутон В", align="center", font=("Arial", 25, "bold"))
 
 
 def gamesize():
     pen.goto(-220, 0)
-    pen.write("Голям гейм", align="center", font=("Arial", 60, "bold"))
+    pen.write("Голям гейм", align="center", font=("Arial", 40, "bold"))
     pen.goto(-220, -100)
-    pen.write("Бутон А", align="center", font=("Arial", 40, "bold"))
+    pen.write("Бутон А", align="center", font=("Arial", 25, "bold"))
     pen.goto(250, 0)
-    pen.write("Малък гейм", align="center", font=("Arial", 60, "bold"))
+    pen.write("Малък гейм", align="center", font=("Arial", 40, "bold"))
     pen.goto(250, -100)
-    pen.write("Бутон В", align="center", font=("Arial", 40, "bold"))
+    pen.write("Бутон В", align="center", font=("Arial", 25, "bold"))
 
 
 def buttonAcolor():
     pen.color("red")
     pen.goto(-220, -100)
-    pen.write("Бутон А", align="center", font=("Arial", 40, "bold"))
+    pen.write("Бутон А", align="center", font=("Arial", 25, "bold"))
     pen.color("white")
     sleep(0.5)
     pen.clear()
@@ -154,7 +155,7 @@ def buttonAcolor():
 def buttonBcolor():
     pen.color("red")
     pen.goto(250, -100)
-    pen.write("Бутон В", align="center", font=("Arial", 40, "bold"))
+    pen.write("Бутон В", align="center", font=("Arial", 25, "bold"))
     pen.color("white")
     sleep(0.5)
     pen.clear()
@@ -163,13 +164,13 @@ def buttonBcolor():
 def resetgame():
     window.bgcolor("black")
     pen.color("white")
-    global serve, totalLeft, totalRight, leftScore, rightScore, count, game_state, player1, player2, player3, player4,\
+    global serve, totalLeft, totalRight, leftScore, rightScore, count, game_state, player1, player2, player3, player4, \
         posCount, positionX, positionY, positionX2, positionY2, player1_id, player2_id, player3_id, player4_id, doubles
     serve = [True, False]
     totalLeft = totalRight = leftScore = rightScore = count = 0
     pen.clear()
     pen.goto(0, 200)
-    pen.write("Нова игра!", align="center", font=("Arial", 60, "bold"))
+    pen.write("Нова игра!", align="center", font=("Arial", 40, "bold"))
     pen.goto(0, -100)
     player1 = False
     player2 = False
@@ -192,7 +193,7 @@ def totalscore():
     pen.goto(0, 220)
     pen.color("white")
     pen.write("Общ резултат {} : {}".format(totalLeft, totalRight), align="center",
-              font=("Arial", 60, "bold"))
+              font=("Arial", 40, "bold"))
     pen.goto(0, -100)
 
 
@@ -202,24 +203,24 @@ def serveistrue():
     pen.color("green")
     if leftScore <= 9 and rightScore <= 9:
         pen.goto(-400, -100)
-        pen.write(">", align="center", font=("Arial", 200, "bold"))
+        pen.write(">", align="center", font=("Arial", 150, "bold"))
         pen.goto(0, -100)
-        pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+        pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 150, "bold"))
     elif leftScore >= 10 and rightScore <= 9:
         pen.goto(-400, -100)
-        pen.write(">", align="center", font=("Arial", 200, "bold"))
+        pen.write(">", align="center", font=("Arial", 150, "bold"))
         pen.goto(0, -100)
-        pen.write("{} : {}  ".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+        pen.write("{} : {}  ".format(leftScore, rightScore), align="center", font=("Arial", 150, "bold"))
     elif rightScore >= 10 and leftScore <= 9:
         pen.goto(-400, -100)
-        pen.write(">", align="center", font=("Arial", 200, "bold"))
+        pen.write(">", align="center", font=("Arial", 150, "bold"))
         pen.goto(0, -100)
-        pen.write("  {} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+        pen.write("  {} : {}".format(leftScore, rightScore), align="center", font=("Arial", 150, "bold"))
     elif rightScore >= 10 and leftScore >= 10:
         pen.goto(-400, -100)
-        pen.write(">", align="center", font=("Arial", 200, "bold"))
+        pen.write(">", align="center", font=("Arial", 150, "bold"))
         pen.goto(0, -100)
-        pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+        pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 150, "bold"))
     totalscore()
 
 
@@ -229,26 +230,26 @@ def serveisfalse():
     pen.color("green")
     if leftScore <= 9 and rightScore <= 9:
         pen.goto(400, -100)
-        pen.write("<", align="center", font=("Arial", 200, "bold"))
+        pen.write("<", align="center", font=("Arial", 150, "bold"))
         pen.goto(0, -100)
-        pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+        pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 150, "bold"))
     elif leftScore >= 10 and rightScore <= 9:
         pen.goto(400, -100)
-        pen.write("<", align="center", font=("Arial", 200, "bold"))
+        pen.write("<", align="center", font=("Arial", 150, "bold"))
         pen.goto(0, -100)
-        pen.write("{} : {}  ".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+        pen.write("{} : {}  ".format(leftScore, rightScore), align="center", font=("Arial", 150, "bold"))
     elif rightScore >= 10 and leftScore <= 9:
         totalscore()
         pen.color("green")
         pen.goto(400, -100)
-        pen.write("<", align="center", font=("Arial", 200, "bold"))
+        pen.write("<", align="center", font=("Arial", 150, "bold"))
         pen.goto(0, -100)
-        pen.write("  {} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+        pen.write("  {} : {}".format(leftScore, rightScore), align="center", font=("Arial", 150, "bold"))
     elif rightScore >= 10 and leftScore >= 10:
         pen.goto(400, -100)
-        pen.write("<", align="center", font=("Arial", 200, "bold"))
+        pen.write("<", align="center", font=("Arial", 150, "bold"))
         pen.goto(0, -100)
-        pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+        pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 150, "bold"))
     totalscore()
 
 
@@ -265,17 +266,17 @@ def servingturndisplay():
         pen.clear()
         pen.color("green")
         pen.goto(-400, -100)
-        pen.write(">", align="center", font=("Arial", 200, "bold"))
+        pen.write(">", align="center", font=("Arial", 150, "bold"))
         pen.goto(0, -100)
-        pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+        pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 150, "bold"))
         totalscore()
     elif not serve:
         pen.clear()
         pen.color("green")
         pen.goto(400, -100)
-        pen.write("<", align="center", font=("Arial", 200, "bold"))
+        pen.write("<", align="center", font=("Arial", 150, "bold"))
         pen.goto(0, -100)
-        pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 200, "bold"))
+        pen.write("{} : {}".format(leftScore, rightScore), align="center", font=("Arial", 150, "bold"))
         totalscore()
 
 
@@ -301,7 +302,7 @@ def rightwins():
     rightScore = leftScore = count = 0
     start_game = default_timer()
     pen.goto(0, -200)
-    pen.write('ПОБЕДА !', align="center", font=("Arial", 100, "bold"))
+    pen.write('ПОБЕДА !', align="center", font=("Arial", 75, "bold"))
     pen.goto(0, -100)
     sleep(5)
     pen.clear()
@@ -330,7 +331,7 @@ def leftwins():
     leftScore = rightScore = count = 0
     start_game = default_timer()
     pen.goto(0, -200)
-    pen.write('ПОБЕДА !', align="center", font=("Arial", 100, "bold"))
+    pen.write('ПОБЕДА !', align="center", font=("Arial", 75, "bold"))
     pen.goto(0, -100)
     sleep(5)
     pen.clear()
@@ -345,34 +346,24 @@ def leftwins():
     servingturndisplay()
 
 
-def wronginput():
-    global count
-    count -= 1
-    pen.color("red")
-    pen.goto(0, 150)
-    pen.write("Грешен бутон", align="center", font=("Arial", 60, "bold"))
-    pen.goto(0, -100)
-    pen.color("green")
-
-
 def printnames():
     pen.color("white")
     pen.goto(-200, 100)
-    pen.write("Веско", align="center", font=("Arial", 60, "bold"))
+    pen.write("Веско", align="center", font=("Arial", 40, "bold"))
     pen.goto(-200, 0)
-    pen.write("Сашо", align="center", font=("Arial", 60, "bold"))
+    pen.write("Сашо", align="center", font=("Arial", 40, "bold"))
     pen.goto(-200, -100)
-    pen.write("Гери", align="center", font=("Arial", 60, "bold"))
+    pen.write("Гери", align="center", font=("Arial", 40, "bold"))
     pen.goto(300, 100)
-    pen.write("Георги", align="center", font=("Arial", 60, "bold"))
+    pen.write("Георги", align="center", font=("Arial", 40, "bold"))
     pen.goto(300, 0)
-    pen.write("Ивайло", align="center", font=("Arial", 60, "bold"))
+    pen.write("Ивайло", align="center", font=("Arial", 40, "bold"))
     pen.goto(300, -100)
-    pen.write("Друг", align="center", font=("Arial", 60, "bold"))
+    pen.write("Друг", align="center", font=("Arial", 40, "bold"))
     pen.goto(0, -180)
-    pen.write("Избери - Бутон А", align="center", font=("Arial", 40, "bold"))
+    pen.write("Избери - Бутон А", align="center", font=("Arial", 25, "bold"))
     pen.goto(0, -240)
-    pen.write("Потвърди - Бутон Б", align="center", font=("Arial", 40, "bold"))
+    pen.write("Потвърди - Бутон Б", align="center", font=("Arial", 25, "bold"))
     pen.goto(0, -180)
 
 
@@ -383,7 +374,7 @@ def position():
         pen.begin_fill()
         pen.goto(positionX, positionY)
         pen.down()
-        pen.circle(35)
+        pen.circle(25)
         pen.end_fill()
         pen.up()
         positionY -= 100
@@ -392,7 +383,7 @@ def position():
         pen.begin_fill()
         pen.goto(positionX2, positionY2)
         pen.down()
-        pen.circle(35)
+        pen.circle(25)
         pen.end_fill()
         pen.up()
         positionY2 -= 100
@@ -401,7 +392,7 @@ def position():
         pen.begin_fill()
         pen.goto(positionX2, positionY2)
         pen.down()
-        pen.circle(35)
+        pen.circle(25)
         pen.end_fill()
         pen.up()
         positionY2 -= 100
@@ -417,7 +408,7 @@ def playercheck():
     if doubles is True:
         if player2_id == player1_id and player2 is True and player1 is True:
             pen.goto(0, 200)
-            pen.write("Играчът вече е избран", align="center", font=("Arial", 60, "bold"))
+            pen.write("Играчът вече е избран", align="center", font=("Arial", 40, "bold"))
             printnames()
             player2 = False
             player2_id = None
@@ -425,7 +416,7 @@ def playercheck():
             pen.clear()
         elif player3_id == player1_id and player4 is True and player1 is True:
             pen.goto(0, 200)
-            pen.write("Играчът вече е избран", align="center", font=("Arial", 60, "bold"))
+            pen.write("Играчът вече е избран", align="center", font=("Arial", 40, "bold"))
             printnames()
             player3 = False
             player3_id = None
@@ -433,7 +424,7 @@ def playercheck():
             pen.clear()
         elif player3_id == player2_id and player3 is True and player2 is True:
             pen.goto(0, 200)
-            pen.write("Играчът вече е избран", align="center", font=("Arial", 60, "bold"))
+            pen.write("Играчът вече е избран", align="center", font=("Arial", 40, "bold"))
             printnames()
             player3 = False
             player3_id = None
@@ -441,7 +432,7 @@ def playercheck():
             pen.clear()
         elif player4_id == player1_id and player4 is True and player1 is True:
             pen.goto(0, 200)
-            pen.write("Играчът вече е избран", align="center", font=("Arial", 60, "bold"))
+            pen.write("Играчът вече е избран", align="center", font=("Arial", 40, "bold"))
             printnames()
             player4 = False
             player4_id = None
@@ -449,7 +440,7 @@ def playercheck():
             pen.clear()
         elif player4_id == player2_id and player4 is True and player2 is True:
             pen.goto(0, 200)
-            pen.write("Играчът вече е избран", align="center", font=("Arial", 60, "bold"))
+            pen.write("Играчът вече е избран", align="center", font=("Arial", 40, "bold"))
             printnames()
             player4 = False
             player4_id = None
@@ -457,7 +448,7 @@ def playercheck():
             pen.clear()
         elif player4_id == player3_id and player4 is True and player3 is True:
             pen.goto(0, 200)
-            pen.write("Играчът вече е избран", align="center", font=("Arial", 60, "bold"))
+            pen.write("Играчът вече е избран", align="center", font=("Arial", 40, "bold"))
             printnames()
             player4 = False
             player4_id = None
@@ -466,7 +457,7 @@ def playercheck():
     elif doubles is False:
         if player1_id == player2_id:
             pen.goto(0, 200)
-            pen.write("Играчът вече е избран", align="center", font=("Arial", 60, "bold"))
+            pen.write("Играчът вече е избран", align="center", font=("Arial", 40, "bold"))
             printnames()
             player1 = False
             player2 = False
@@ -484,11 +475,11 @@ def setplayer(e):
         pen.begin_fill()
         pen.goto(positionX, red_position)
         pen.down()
-        pen.circle(35)
+        pen.circle(25)
         pen.end_fill()
         pen.up()
         pen.goto(0, 200)
-        pen.write("Играчът е избран", align="center", font=("Arial", 60, "bold"))
+        pen.write("Играчът е избран", align="center", font=("Arial", 40, "bold"))
         e = not e
         return e
     elif 3 < posCount <= 5:
@@ -497,11 +488,11 @@ def setplayer(e):
         pen.begin_fill()
         pen.goto(positionX2, red_position2)
         pen.down()
-        pen.circle(35)
+        pen.circle(25)
         pen.end_fill()
         pen.up()
         pen.goto(0, 200)
-        pen.write("Играчът е избран", align="center", font=("Arial", 60, "bold"))
+        pen.write("Играчът е избран", align="center", font=("Arial", 40, "bold"))
         e = not e
         return e
     elif posCount == 0:
@@ -509,17 +500,17 @@ def setplayer(e):
         pen.begin_fill()
         pen.goto(100, -100)
         pen.down()
-        pen.circle(35)
+        pen.circle(25)
         pen.end_fill()
         pen.up()
         pen.goto(0, 200)
-        pen.write("Играчът е избран", align="center", font=("Arial", 60, "bold"))
+        pen.write("Играчът е избран", align="center", font=("Arial", 40, "bold"))
         e = not e
         return e
 
 
 def slowraspberry():
-    sleep(0.3)
+    sleep(0.15)
 
 
 # game logic
@@ -806,16 +797,15 @@ while True:
                     resetgame()
                 elif buttonC.is_active:  # command to close window
                     window.bye()
-                else:
-                    wronginput()  # handling wrong input
+
         elif leftScore == gamepoints:  # left wins
             leftwins()
         elif rightScore == gamepoints:  # right wins
             rightwins()
         else:
             slowraspberry()
-            count += 1
             if buttonA.is_active:  # point for left player
+                count += 1
                 leftScore += 1
                 if serve is True:
                     serveistrue()
@@ -824,6 +814,7 @@ while True:
                     serveisfalse()
                     servicecheck()
             elif buttonB.is_active:  # point for right  player
+                count += 1
                 rightScore += 1
                 if serve is True:
                     serveistrue()
@@ -835,7 +826,6 @@ while True:
                 resetgame()
             elif buttonC.is_active:  # command to close window
                 window.bye()
-            else:
-                wronginput()  # handling wrong input
+
 window.mainloop()
 window.bye()
